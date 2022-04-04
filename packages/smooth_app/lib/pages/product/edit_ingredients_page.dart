@@ -34,7 +34,7 @@ class EditIngredientsPage extends StatefulWidget {
 class _EditIngredientsPageState extends State<EditIngredientsPage> {
   final TextEditingController _controller = TextEditingController();
   ImageProvider? _imageProvider;
-  bool _updatingImage = false;
+  bool _updatingImage = true;
   bool _updatingIngredients = false;
 
   static String _getIngredientsString(List<Ingredient>? ingredients) {
