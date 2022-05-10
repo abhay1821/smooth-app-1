@@ -1,4 +1,5 @@
 {
+    "app_name": "OpenFoodFacts",
     "@Utils": {},
     "yes": "Evet",
     "@yes": {},
@@ -35,7 +36,7 @@
     "@error_occurred": {},
     "featureInProgress": "Bu özellik üzerinde halâ çalışıyoruz, takipte kal",
     "@featureInProgress": {},
-    "label_web": "Web üzerinde görüntüle",
+    "label_web": "Web'de görüntüle",
     "@label_web": {},
     "learnMore": "Daha fazla bilgi edin",
     "@learnMore": {},
@@ -65,7 +66,7 @@
     "@whatIsOff": {
         "description": "Description of Open Food Facts organization."
     },
-    "offUtility": "Kendiniz ve dünya için iyi olan gıdaları seçin.",
+    "offUtility": "Kendiniz ve gezegen için iyi olan yiyecekleri seçiniz.",
     "@offUtility": {
         "description": "Description of what a user can use Open Food Facts for."
     },
@@ -147,20 +148,36 @@
     },
     "sign_up_page_action_ok": "Tebrikler! Hesabınız başarıyla oluşturuldu.",
     "sign_up_page_display_name_hint": "İsim",
-    "sign_up_page_display_name_error_empty": "Please enter the display name you want to use",
+    "sign_up_page_display_name_error_empty": "Lütfen kaydetmek istediğiniz başlığı girin",
     "sign_up_page_email_hint": "E-posta",
     "sign_up_page_email_error_empty": "E-mail gereklidir",
-    "sign_up_page_email_error_invalid": "Bu e-posta geçersiz",
-    "sign_up_page_username_hint": "Kullanıcı adı",
+    "sign_up_page_email_error_invalid": "Geçersiz e-posta",
+    "sign_up_page_username_hint": "Kullanıcı adı: Herkese açık",
     "sign_up_page_username_error_empty": "Lütfen bir kullanıcı adı girin",
     "sign_up_page_username_error_invalid": "Lütfen Geçerli Bir Kullanıcı Adı Girin",
     "sign_up_page_username_description": "Kullanıcı adı boşluk, büyük harf veya özel karakter içeremez",
+    "sign_up_page_username_length_invalid": "Kullanıcı adı {value} karakterden az olmalıdır",
+    "@sign_up_page_username_length_invalid": {
+        "placeholders": {
+            "value": {
+                "type": "int"
+            }
+        }
+    },
     "sign_up_page_password_hint": "Şifre",
     "sign_up_page_password_error_empty": "Lütfen bir şifre girin",
     "sign_up_page_password_error_invalid": "Geçerli bir şifre girin. (en az 6 harf)",
     "sign_up_page_confirm_password_hint": "Şifreyi Doğrula",
     "sign_up_page_confirm_password_error_empty": "Lütfen parolayı doğrulayın",
     "sign_up_page_confirm_password_error_invalid": "Parolalar eşleşmiyor",
+    "sign_up_page_agree_text": "Open Food Facts'i kabul ediyorum",
+    "@sign_up_page_agree_text": {
+        "description": "I agree to the Open Food Facts is followed by sign_up_page_terms_text"
+    },
+    "sign_up_page_terms_text": "kullanım ve katılım koşulları",
+    "@sign_up_page_terms_text": {
+        "description": "terms of use and contribution is preceded by sign_up_page_agree_text"
+    },
     "sign_up_page_agree_url": "https://world-en.openfoodfacts.org/terms-of-use",
     "@sign_up_page_agree_url": {
         "description": "Please insert the right url here. Go to the openfoodfacts homepage, switch to your country and then on the bottom left footer is Terms of use from which the url should be taken"
@@ -207,7 +224,7 @@
     "@support": {
         "description": "Button label: Opens a pop up window where all ways to get support are shown"
     },
-    "support_join_slack": "Ask for help in our Slack channel",
+    "support_join_slack": "Slack kanalımızda yardım isteyin",
     "support_via_email": "Bize bir e-posta gönder",
     "termsOfUse": "Kullanım Koşulları",
     "@termsOfUse": {},
@@ -260,11 +277,11 @@
     "@saving_answer": {
         "description": "Dialog shown to users after they have answered a question, while the answer is being saved in the BE."
     },
-    "contribute_to_get_rewards": "Help improve food transparency and get rewards",
+    "contribute_to_get_rewards": "Gıda şeffaflığını geliştirmeye yardımcı olun ve ödüller kazanın",
     "@contribute_to_get_rewards": {
         "description": "Button description shown on a product, clicking the button opens a card with unanswered product questions, users can answer these to contribute to Open food facts and gain rewards."
     },
-    "question_sign_in_text": "Sign in to your Open Food Facts account to claim your contribution and to increase your creditability",
+    "question_sign_in_text": "Yapacağın katkıların karşılığını alabilmek için Open Food Facts hesabına giriş yap",
     "@Personal preferences": {},
     "myPreferences": "Tercihlerim",
     "@myPreferences": {
@@ -288,7 +305,7 @@
     "ranking_subtitle_match_yes": "Sizin için harika bir eşleşme",
     "ranking_subtitle_match_no": "Çok zayıf eşleşme",
     "ranking_subtitle_match_maybe": "Bilinmeyen eşleşme",
-    "reloaded_with_new_preferences": "Reloaded with your new preferences",
+    "reloaded_with_new_preferences": "Yeni tercihlerle yeniden yüklendi",
     "@reloaded_with_new_preferences": {
         "description": "Snackbar title: Shows that the modified settings have been applied"
     },
@@ -345,17 +362,17 @@
     },
     "ingredients": "İçindekiler",
     "@ingredients": {},
-    "ingredients_editing_instructions": "Keep the original order. Indicate the percentage when specified. Separate with a comma or hyphen, use parentheses for ingredients of an ingredient, and indicate allergens between underscores.",
-    "ingredients_editing_error": "Failed to save the ingredients.",
-    "ingredients_editing_image_error": "Failed to get a new ingredients image.",
-    "ingredients_editing_title": "Edit Ingredients",
+    "ingredients_editing_instructions": "Orijinal düzeni koruyun. Belirtildiğinde yüzdeyi belirtin. Virgül veya kısa çizgi ile ayırın, bir bileşenin bileşenleri için parantez kullanın ve alerjenleri alt çizgiler arasında belirtin.",
+    "ingredients_editing_error": "Malzemeler kaydedilemedi.",
+    "ingredients_editing_image_error": "Yeni malzeme görüntüsü alınamadı.",
+    "ingredients_editing_title": "Malzemeleri Düzenle",
     "ingredients_photo": "İçindekiler fotoğarafı",
     "@ingredients_photo": {
         "description": "Button label: For adding a picture of the Ingredients of a product"
     },
     "nutrition": "Beslenme",
     "@nutrition": {},
-    "nutrition_page_close_confirmation": "Are you sure you want to close without saving?",
+    "nutrition_page_close_confirmation": "Kaydetmeden çıkmak istediğinizden emin misiniz?",
     "nutrition_facts_photo": "Besin değerleri fotoğrafı",
     "@nutrition_facts_photo": {
         "description": "Button label: For adding a picture of the nutrition facts of a product"
@@ -368,78 +385,108 @@
     "@packaging_information_photo": {},
     "missing_product": "Yeni bir ürün buldun!",
     "@missing_product": {},
-    "add_product_take_photos": "Take photos of the packaging to add this product to Open Food Facts",
+    "add_product_take_photos": "Bu ürünü Open Food Facts'e eklemek için ambalajın fotoğraflarını çekin",
     "@add_product_take_photos": {},
-    "add_product_take_photos_descriptive": "Please take some photos and the Open Food Facts engine can work out the rest!",
+    "add_product_take_photos_descriptive": "Lütfen bir kaç fotoğraf çekin, Open Food Facts motoru gerisini halleder!",
     "@add_product_take_photos_descriptive": {},
-    "add_product_information_button_label": "Ürün bilgisi ekleyin",
+    "add_product_information_button_label": "Ürün bilgisi ekle",
     "@add_product_information_button_label": {},
     "new_product": "Yeni ürün",
     "@new_product": {},
-    "front_packaging_photo_button_label": "Front of product photo",
+    "front_packaging_photo_button_label": "Ürünün önden bir fotoğrafı",
     "@front_packaging_photo_button_label": {},
-    "confirm_front_packaging_photo_button_label": "Confirm front of product photo",
+    "confirm_front_packaging_photo_button_label": "Yüklediğin fotoğrafı onayla",
     "@confirm_front_packaging_photo_button_label": {
         "description": "Button clicking on which confirms the picture of the front of product that user just took."
     },
-    "front_photo_uploaded": "Front photo uploaded",
+    "confirm_button_label": "Onayla",
+    "front_packaging_photo_title": "Ön ambalaj fotoğrafı",
+    "ingredients_photo_title": "İçindekiler fotoğarafı",
+    "nutritional_facts_photo_title": "Besin değerleri fotoğrafı",
+    "recycling_photo_title": "Geri Dönüşüm Fotoğrafı",
+    "other_interesting_photo_title": "Diğer İlginç Fotoğraflar",
+    "front_photo_uploaded": "Önden fotoğraf yüklendi",
     "@front_photo_uploaded": {},
     "ingredients_photo_button_label": "İçindekiler fotoğarafı",
     "@ingredients_photo_button_label": {},
-    "confirm_ingredients_photo_button_label": "Confirm ingredients photo",
+    "confirm_ingredients_photo_button_label": "İçindekiler fotoğrafını doğrulayın",
     "@confirm_ingredients_photo_button_label": {
         "description": "Button clicking on which confirms the picture of ingredients that user just took."
     },
-    "ingredients_photo_uploaded": "Ingredients photo uploaded",
+    "ingredients_photo_uploaded": "\"İçindekiler\" fotoğrafı yüklendi",
     "@ingredients_photo_uploaded": {},
     "nutritional_facts_photo_button_label": "Besin değerleri fotoğrafı",
     "@nutritional_facts_photo_button_label": {},
-    "confirm_nutritional_facts_photo_button_label": "Confirm nutrition facts photo",
+    "confirm_nutritional_facts_photo_button_label": "Besin değerleri fotoğrafını onayla",
     "@confirm_nutritional_facts_photo_button_label": {
         "description": "Button clicking on which confirms the picture of nutritional facts that user just took."
     },
-    "nutritional_facts_photo_uploaded": "Nutrition facts photo uploaded",
+    "nutritional_facts_photo_uploaded": "\"Besin değerleri\" fotoğrafı yüklendi",
     "@nutritional_facts_photo_uploaded": {},
-    "recycling_photo_button_label": "Recycling information photo",
+    "recycling_photo_button_label": "Geri dönüşüm bilgisi fotoğrafı",
     "@recycling_photo_button_label": {},
-    "confirm_recycling_photo_button_label": "Confirm Recycling information photo",
+    "confirm_recycling_photo_button_label": "Geri dönüşüm bilgisi fotoğrafını onayla",
     "@confirm_recycling_photo_button_label": {
         "description": "Button clicking on which confirms the picture of recycling information that user just took."
     },
     "recycling_photo_uploaded": "Geri dönüşüm fotoğrafı yüklendi",
     "@recycling_photo_uploaded": {},
-    "other_interesting_photo_button_label": "Other interesting photos",
+    "other_interesting_photo_button_label": "Diğer ilginç fotoğraflar",
     "@other_interesting_photo_button_label": {},
     "confirm_other_interesting_photo_button_label": "Fotoğrafı onayla",
     "@confirm_other_interesting_photo_button_label": {
         "description": "Button clicking on which confirms a miscellaneous photo of the product."
     },
-    "other_photo_uploaded": "Miscellaneous photo uploaded",
+    "other_photo_uploaded": "Fotoğraf yüklendi",
     "@other_photo_uploaded": {},
     "retake_photo_button_label": "Yeniden çek",
     "@retake_photo_button_label": {
         "description": "Button clicking on which allows users to retake the last photo they took."
     },
-    "selecting_photo": "Selecting photo",
+    "selecting_photo": "Fotoğraf seçiliyor",
     "@selecting_photo": {
         "description": "Progress indicator when the users takes a photo"
     },
-    "uploading_image": "Uploading photo to the server",
+    "uploading_image": "Fotoğraf sunucuya yükleniyor",
     "@uploading_image": {
         "description": "Message when a new picture is uploading to the server"
     },
-    "score_add_missing_ingredients": "Add missing ingredients",
-    "score_add_missing_nutrition_facts": "Add missing nutrition facts",
-    "score_add_missing_product_category": "Add missing product category",
-    "score_update_nutrition_facts": "Update nutrition facts",
+    "uploading_image_type_front": "Ön yüz görseli Open Food Facts'e yükleniyor",
+    "@uploading_image_type_front": {
+        "description": "Message when a new front picture is being uploaded to the server"
+    },
+    "uploading_image_type_ingredients": "İçindekiler görseli Open Food Facts'e yükleniyor",
+    "@uploading_image_type_ingredients": {
+        "description": "Message when a new ingredients picture is being uploaded to the server"
+    },
+    "uploading_image_type_nutrition": "Besin değerleri görseli Open Food Facts'e yükleniyor",
+    "@uploading_image_type_nutrition": {
+        "description": "Message when a new nutrition picture is being uploaded to the server"
+    },
+    "uploading_image_type_packaging": "Ambalaj görseli Open Food Facts'e yükleniyor",
+    "@uploading_image_type_packaging": {
+        "description": "Message when a new packaging picture is being uploaded to the server"
+    },
+    "uploading_image_type_other": "\"Diğer\" görseli Open Food Facts'e yükleniyor",
+    "@uploading_image_type_other": {
+        "description": "Message when a new other picture is being uploaded to the server"
+    },
+    "uploading_image_type_generic": "Görsel Open Food Facts'e yükleniyor",
+    "@uploading_image_type_generic": {
+        "description": "Message when a new picture is being uploaded to the server"
+    },
+    "score_add_missing_ingredients": "Eksik içindekiler bilgileri ekle",
+    "score_add_missing_nutrition_facts": "Eksik besin değerlerini ekle",
+    "score_add_missing_product_category": "Eksik ürün kategori bilgisini ekle",
+    "score_update_nutrition_facts": "Besin değerleri bilgilerini güncelle",
     "nutrition_page_title": "Besin Değerleri",
-    "nutrition_page_unspecified": "Nutrition facts are not specified on the product",
+    "nutrition_page_unspecified": "Ürünün üzerinde besin değerleri bilgisi yer almıyor",
     "nutrition_page_per_100g": "100g başına",
     "nutrition_page_per_serving": "porsiyon başına",
     "nutrition_page_add_nutrient": "Besin ögesi ekle",
     "nutrition_page_serving_size": "Porsiyon ölçüsü",
     "nutrition_page_invalid_number": "Geçersiz numara",
-    "nutrition_page_update_running": "Updating the product on the server...",
+    "nutrition_page_update_running": "Ürün bilgileri güncelleniyor...",
     "nutrition_page_update_done": "Ürün güncellendi!",
     "more_photos": "Daha ilginç fotoğraflar",
     "@more_photos": {},
@@ -460,7 +507,7 @@
     "@could_not_refresh": {
         "description": "The product data couldn't be refreshed"
     },
-    "product_internet_error": "Impossible to fetch information about this product due to a network error.",
+    "product_internet_error": "Bir ağ hatasından dolayı ürün bilgileri çekilemedi.",
     "cached_results_from": "Sonuçların gösterildiği:",
     "@cached_results_from": {
         "description": "Cached results from: x time ago (time ago should not be added to the string)"
@@ -476,11 +523,11 @@
     "@product_improvement_add_category": {
         "description": "Message for ProductImprovement.ADD_CATEGORY"
     },
-    "product_improvement_add_nutrition_facts": "Add nutrition facts to calculate the Nutri-Score.",
+    "product_improvement_add_nutrition_facts": "Nutri-Score puanını hesaplamak için besin değerleri bilgisi ekleyin.",
     "@product_improvement_add_nutrition_facts": {
         "description": "Message for ProductImprovement.ADD_NUTRITION_FACTS"
     },
-    "product_improvement_add_nutrition_facts_and_category": "Add nutrition facts and a category to calculate the Nutri-Score.",
+    "product_improvement_add_nutrition_facts_and_category": "Nutri-Score puanını hesaplamak için besin değerleri ve bir kategori bilgisi ekleyin.",
     "@product_improvement_add_nutrition_facts_and_category": {
         "description": "Message for ProductImprovement.ADD_NUTRITION_FACTS_AND_CATEGORY"
     },
@@ -492,23 +539,23 @@
     "@product_improvement_obsolete_nutrition_image": {
         "description": "Message for ProductImprovement.OBSOLETE_NUTRITION_IMAGE"
     },
-    "product_improvement_origins_to_be_completed": "The Eco-Score takes into account the origins of the ingredients. Please take a photo of the ingredient list and/or any geographic claim or edit the product, so they can be taken into account.",
+    "product_improvement_origins_to_be_completed": "Eco-Score, içindeki maddelerin kökenlerini hesaba katar. Hesaba katılabilmesi için lütfen bunları fotoğraflayın (içindekiler listesi ve/veya herhangi bir coğrafi iddia) veya ürünü düzenleyin.",
     "@product_improvement_origins_to_be_completed": {
         "description": "Message for ProductImprovement.ORIGINS_TO_BE_COMPLETED"
     },
-    "country_chooser_label": "Please choose a country",
+    "country_chooser_label": "Lütfen bir ülke seçin",
     "@country_chooser_label": {
         "description": "Label shown above a selector where the user can select their country"
     },
-    "country_selection_explanation": "Some environmental features are location-specific",
+    "country_selection_explanation": "Bazı çevresel özellikler konuma özgüdür",
     "@country_label": {
         "description": "Explanation as to why users should select their country."
     },
-    "product_removed_comparison": "Product removed from comparison",
+    "product_removed_comparison": "Ürün karşılaştırmadan kaldırıldı",
     "@product_removed_comparison": {
         "description": "Product got removed from comparison list"
     },
-    "product_removed_history": "Product removed from history",
+    "product_removed_history": "Ürün geçmişten kaldırıldı",
     "@product_removed_history": {
         "description": "Product got removed from history"
     },
@@ -524,12 +571,12 @@
     "@clear": {
         "description": "Clears a product list"
     },
-    "really_clear": "Do you really want to delete this list?",
-    "product_compatibility_unknown": "Compatibility Unknown",
+    "really_clear": "Bu listeyi silmek istediğinize emin misiniz?",
+    "product_compatibility_unknown": "Uyumluluk bilimiyor",
     "@product_compatibility_unknown": {
         "description": "Product compatibility summary title"
     },
-    "product_compatibility_incompatible": "Does not match",
+    "product_compatibility_incompatible": "Eşleşmiyor",
     "@product_compatibility_incompatible": {
         "description": "Product compatibility summary title"
     },
@@ -611,7 +658,7 @@
     "@consent_analytics_title": {
         "description": "Title for the consent analytics UI Page"
     },
-    "consent_analytics_body1": "Help the Open Food Facts volunteers to improve the app. You decide if you want to send anonymous analytics.",
+    "consent_analytics_body1": "Help the Open Food Facts volunteers to improve the app. You decide whether to submit anonymous analytics.",
     "@conset_analytics_body1": {
         "description": "first paragraph for the consent analytics UI Page"
     },
@@ -648,11 +695,11 @@
     "@product_list_icon_desc": {
         "description": "When the history list is empty, icon description (for accessibility) of the message explaining to start scanning"
     },
-    "product_list_empty_title": "Start scanning !",
+    "product_list_empty_title": "Start scanning!",
     "@product_list_empty_title": {
         "description": "When the history list is empty, title of the message explaining to start scanning"
     },
-    "product_list_empty_message": "Products you scan will appear here and you can check detailed information about them",
+    "product_list_empty_message": "Scanned products will appear here and you can check detailed information about them",
     "@product_list_empty_message": {
         "description": "When the history list is empty, body of the message explaining to start scanning"
     },
@@ -693,7 +740,7 @@
     "@crash_reporting_toggle_title": {
         "description": "Title for the Crash reporting toggle"
     },
-    "crash_reporting_toggle_subtitle": "When enabled, crash reports will be sent to the Open Food Facts bug system automatically, so that we can fix bugs and improve the app.",
+    "crash_reporting_toggle_subtitle": "When enabled, crash reports are automatically submitted to Open Food Facts' error tracking system, so that bugs can be fixed and thus improve the app.",
     "@crash_reporting_toggle_subtitle": {
         "description": "SubTitle for the Crash reporting toggle"
     },
@@ -713,6 +760,24 @@
     "@permission_photo_error": {
         "description": "When the camera/photo permission failed to be acquired (!= denied)"
     },
+    "permission_photo_denied_title": "Allow camera use to scan barcodes",
+    "permission_photo_denied_message": "For an enhanced experience, please allow {appName} to access your camera. You will be able to directly scan barcodes.",
+    "@permission_photo_denied_message": {
+        "description": "When the camera/photo permission is denied by user",
+        "placeholders": {
+            "appName": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_photo_denied_button": "Allow",
+    "@permission_photo_denied_button": {
+        "description": "When the camera/photo permission is denied by user"
+    },
+    "permission_photo_denied_dialog_settings_title": "Permission denied",
+    "permission_photo_denied_dialog_settings_message": "As you've previously denied the camera permission, you must allow it manually from the Settings.",
+    "permission_photo_denied_dialog_settings_button_open": "Ayarları Aç",
+    "permission_photo_denied_dialog_settings_button_cancel": "İptal",
     "permission_photo_denied": "No camera access granted",
     "@permission_photo_denied": {
         "description": "When the camera/photo permission is denied by user"
@@ -768,5 +833,77 @@
     "edit_product_form_save": "Düzenle",
     "@edit_product_form_save": {
         "description": "Product edition - Nutrition facts - Save button"
+    },
+    "completed_basic_details_btn_text": "Complete basic details",
+    "not_implemented_snackbar_text": "Not implemented yet",
+    "category_picker_page_appbar_text": "Kategoriler",
+    "edit_ingredients_extrait_ingredients_btn_text": "İçindekileri çıkartın",
+    "@edit_ingredients_extrait_ingredients_btn_text": {
+        "description": "Ingredients edition - Extract ingredients"
+    },
+    "edit_ingredients_refresh_photo_btn_text": "Fotoğrafı yenileyin",
+    "@edit_ingredients_refresh_photo_btn_text": {
+        "description": "Ingredients edition - Refresh photo"
+    },
+    "user_list_dialog_new_title": "Ürünlerin yeni listesi",
+    "@user_list_dialog_new_title": {
+        "description": "Title of the 'new user list' dialog"
+    },
+    "user_list_dialog_rename_title": "Listeyi yeniden adlandırın",
+    "@user_list_dialog_rename_title": {
+        "description": "Title of the 'rename user list' dialog"
+    },
+    "user_list_subtitle_product": "Listeler",
+    "@user_list_subtitle_product": {
+        "description": "Subtitle of a paragraph about user lists in a product context"
+    },
+    "user_list_button_new": "Yeni liste",
+    "@user_list_button_new": {
+        "description": "Short label of a 'new list' button"
+    },
+    "user_list_button_add_product": "Listeye ekle",
+    "@user_list_button_add_product": {
+        "description": "Short label of an 'add to list' button from a product context"
+    },
+    "user_list_popup_clear": "Temizle",
+    "@user_list_popup_clear": {
+        "description": "Short label of a 'clear list' popup"
+    },
+    "user_list_popup_rename": "Yeniden adlandırın",
+    "@user_list_popup_rename": {
+        "description": "Short label of a 'rename list' popup"
+    },
+    "user_list_name_hint": "Listem",
+    "@user_list_name_hint": {
+        "description": "Hint of a user list name text-field in a 'user list' dialog"
+    },
+    "user_list_name_error_empty": "İsim boş bırakılamaz",
+    "@user_list_name_error_empty": {
+        "description": "Validation error about the name that cannot be empty"
+    },
+    "user_list_name_error_already": "Bu isim zaten kullanılmakta",
+    "@user_list_name_error_already": {
+        "description": "Validation error about the name that is already used for another list"
+    },
+    "user_list_name_error_same": "Bu aynı isim",
+    "@user_list_name_error_same": {
+        "description": "Validation error about the renamed name that is the same as the initial list name"
+    },
+    "basic_details": "Basic Details",
+    "product_name": "Product Name",
+    "add_basic_details_product_name_error": "Please enter the product name",
+    "brand_name": "Brand name",
+    "add_basic_details_brand_name_error": "Please enter the brand name",
+    "weight_gram": "Weight in gram",
+    "add_basic_details_weight_gram_error": "Please enter the weight",
+    "barcode": "Barkod",
+    "basic_details_add_success": "Basic details added succesfully",
+    "basic_details_add_error": "Unable to add basic details. Please try again after some time",
+    "@basic_details_add_error": {
+        "description": "Error message when error occurs while submitting basic details"
+    },
+    "confirm_clear": "Do you really want to clear?",
+    "@confirm_clear": {
+        "description": "Asking about whether to clear the list or not"
     }
 }

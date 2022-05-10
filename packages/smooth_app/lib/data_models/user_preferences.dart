@@ -3,6 +3,7 @@ import 'package:openfoodfacts/personalized_search/preference_importance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_app/data_models/product_preferences.dart';
 import 'package:smooth_app/pages/onboarding/onboarding_flow_navigator.dart';
+import 'package:smooth_app/pages/user_preferences_dev_mode.dart';
 
 class UserPreferences extends ChangeNotifier {
   UserPreferences._shared(final SharedPreferences sharedPreferences)
@@ -24,7 +25,6 @@ class UserPreferences extends ChangeNotifier {
       'lastVisitedOnboardingPage';
   static const String _TAG_PREFIX_FLAG = 'FLAG_PREFIX_';
   static const String _TAG_DEV_MODE = 'devMode';
-  static const String _TAG_CAMERA_DECLINE = 'declined_camera_use_once';
   static const String _TAG_CRASH_REPORTS = 'crash_reports';
   static const String _TAG_ANALYTICS_REPORTS = 'analytics_reports';
   static const String _TAG_EXCLUDED_ATTRIBUTE_IDS = 'excluded_attributes';
@@ -90,12 +90,19 @@ class UserPreferences extends ChangeNotifier {
         : OnboardingPage.values[pageIndex];
   }
 
-  Future<void> setCameraDecline(final bool declined) async {
-    _sharedPreferences.setBool(_TAG_CAMERA_DECLINE, declined);
+  Future<void> setAppLanguageCode(String? languageCode) async {
+    if (languageCode == null) {
+      await _sharedPreferences
+          .remove(UserPreferencesDevMode.userPreferencesAppLanguageCode);
+    } else {
+      await setDevModeString(
+          UserPreferencesDevMode.userPreferencesAppLanguageCode, languageCode);
+    }
+    notifyListeners();
   }
 
-  bool get cameraDeclinedOnce =>
-      _sharedPreferences.getBool(_TAG_CAMERA_DECLINE) ?? false;
+  String? get appLanguageCode =>
+      getDevModeString(UserPreferencesDevMode.userPreferencesAppLanguageCode);
 
   String _getFlagTag(final String key) => _TAG_PREFIX_FLAG + key;
 
