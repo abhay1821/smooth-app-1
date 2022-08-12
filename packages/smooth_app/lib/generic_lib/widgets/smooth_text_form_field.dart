@@ -8,21 +8,21 @@ enum TextFieldTypes {
 
 class SmoothTextFormField extends StatefulWidget {
   const SmoothTextFormField({
-    Key? key,
+    super.key,
     required this.type,
     required this.controller,
     this.enabled,
     this.textInputAction,
     this.validator,
     this.autofillHints,
-    this.textColor,
-    this.backgroundColor,
     required this.hintText,
     this.hintTextFontSize,
     this.prefixIcon,
     this.textInputType,
     this.onChanged,
-  }) : super(key: key);
+    this.onFieldSubmitted,
+    this.autofocus,
+  });
 
   final TextFieldTypes type;
   final TextEditingController? controller;
@@ -32,11 +32,11 @@ class SmoothTextFormField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
-  final Color? textColor;
   final double? hintTextFontSize;
-  final Color? backgroundColor;
   final TextInputType? textInputType;
   final void Function(String?)? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final bool? autofocus;
 
   @override
   State<SmoothTextFormField> createState() => _SmoothTextFormFieldState();
@@ -53,8 +53,11 @@ class _SmoothTextFormFieldState extends State<SmoothTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    final bool _enableSuggestions = widget.type == TextFieldTypes.PLAIN_TEXT;
-    final bool _autocorrect = widget.type == TextFieldTypes.PLAIN_TEXT;
+    final bool enableSuggestions = widget.type == TextFieldTypes.PLAIN_TEXT;
+    final bool autocorrect = widget.type == TextFieldTypes.PLAIN_TEXT;
+    final TextStyle textStyle = DefaultTextStyle.of(context).style;
+    final double textSize =
+        widget.hintTextFontSize ?? textStyle.fontSize ?? 20.0;
 
     return TextFormField(
       keyboardType: widget.textInputType,
@@ -63,31 +66,33 @@ class _SmoothTextFormFieldState extends State<SmoothTextFormField> {
       textInputAction: widget.textInputAction,
       validator: widget.validator,
       obscureText: _obscureText,
-      enableSuggestions: _enableSuggestions,
-      autocorrect: _autocorrect,
+      enableSuggestions: enableSuggestions,
+      autocorrect: autocorrect,
       autofillHints: widget.autofillHints,
+      autofocus: widget.autofocus ?? false,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: widget.onChanged ??
           (String data) {
             // Rebuilds for changing the eye icon
-            if (widget.type == TextFieldTypes.PASSWORD) {
-              if (data.isEmpty) {
-                setState(() {});
-              } else if (data.isNotEmpty && data.length > 1) {
-                setState(() {});
-              }
+            if (widget.type == TextFieldTypes.PASSWORD && data.length != 1) {
+              setState(() {});
             }
           },
+      onFieldSubmitted: widget.onFieldSubmitted,
+      style: TextStyle(fontSize: textSize),
+      cursorHeight: textSize * (textStyle.height ?? 1.4),
       decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: LARGE_SPACE,
+          vertical: SMALL_SPACE,
+        ),
         prefixIcon: widget.prefixIcon,
         filled: true,
         hintStyle: TextStyle(
-          color: widget.textColor,
-          fontSize: widget.hintTextFontSize ?? 20.0,
+          fontSize: textSize,
           overflow: TextOverflow.ellipsis,
         ),
         hintText: widget.hintText,
-        fillColor: widget.backgroundColor,
         border: const OutlineInputBorder(
           borderRadius: CIRCULAR_BORDER_RADIUS,
         ),

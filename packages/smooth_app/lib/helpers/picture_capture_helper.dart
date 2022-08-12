@@ -3,8 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_app/data_models/continuous_scan_model.dart';
-import 'package:smooth_app/database/product_query.dart';
 import 'package:smooth_app/generic_lib/loading_dialog.dart';
+import 'package:smooth_app/query/product_query.dart';
 
 Future<bool> uploadCapturedPicture(
   BuildContext context, {
@@ -12,7 +12,7 @@ Future<bool> uploadCapturedPicture(
   required ImageField imageField,
   required Uri imageUri,
 }) async {
-  final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+  final AppLocalizations appLocalizations = AppLocalizations.of(context);
   final SendImage image = SendImage(
     lang: ProductQuery.getLanguage(),
     barcode: barcode,
@@ -34,6 +34,7 @@ Future<bool> uploadCapturedPicture(
     );
     return false;
   }
+  //ignore: use_build_context_synchronously
   await _updateContinuousScanModel(context, barcode);
   return true;
 }
@@ -42,4 +43,27 @@ Future<void> _updateContinuousScanModel(
     BuildContext context, String barcode) async {
   final ContinuousScanModel model = context.read<ContinuousScanModel>();
   await model.onCreateProduct(barcode);
+}
+
+String getImageUploadedMessage(
+    ImageField imageField, AppLocalizations appLocalizations) {
+  String message = '';
+  switch (imageField) {
+    case ImageField.FRONT:
+      message = appLocalizations.front_photo_uploaded;
+      break;
+    case ImageField.INGREDIENTS:
+      message = appLocalizations.ingredients_photo_uploaded;
+      break;
+    case ImageField.NUTRITION:
+      message = appLocalizations.nutritional_facts_photo_uploaded;
+      break;
+    case ImageField.PACKAGING:
+      message = appLocalizations.recycling_photo_uploaded;
+      break;
+    case ImageField.OTHER:
+      message = appLocalizations.other_photo_uploaded;
+      break;
+  }
+  return message;
 }

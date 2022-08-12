@@ -1,46 +1,95 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smooth_app/helpers/camera_helper.dart';
+import 'package:smooth_app/services/smooth_services.dart';
 
 class PermissionListener extends ValueNotifier<DevicePermission> {
   PermissionListener({
     required this.permission,
-  }) : super(DevicePermission._initial(permission)) {
-    checkPermission();
-  }
+  })  : _status = _DevicePermissionStatus.initial,
+        super(DevicePermission._initial(permission));
 
   final Permission permission;
+  _DevicePermissionStatus _status = _DevicePermissionStatus.initial;
+
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+
+    if (_status == _DevicePermissionStatus.initial) {
+      checkPermission();
+    }
+  }
 
   Future<void> checkPermission() async {
-    value = DevicePermission._(
-      permission,
-      DevicePermissionStatus.checking,
-    );
+    /// If a device doesn't have a camera, let's pretend the permission is
+    /// granted
+    if (permission == Permission.camera && !CameraHelper.hasACamera) {
+      value = DevicePermission._(
+        permission,
+        DevicePermissionStatus.granted,
+      );
+    } else {
+      value = DevicePermission._(
+        permission,
+        DevicePermissionStatus.checking,
+      );
 
-    _onNewPermissionStatus(await permission.request());
+      _status = _DevicePermissionStatus.asked;
+      await _requestPermission();
+    }
+
+    _status = _DevicePermissionStatus.answered;
   }
 
   Future<void> askPermission(
     Future<bool?> Function() onRationaleNotAvailable,
   ) async {
+    // Prevent multiples calls to this method
+    if (_status == _DevicePermissionStatus.asked) {
+      return;
+    }
+
+    _status = _DevicePermissionStatus.asked;
+
+    // On non-Android platforms, this call will always return false
     final bool showRationale = await permission.shouldShowRequestRationale;
 
-    if (showRationale) {
-      _onNewPermissionStatus(await permission.request());
-    } else {
+    // Directly ask for the permission on Android (first time) and iOS
+    if (showRationale || !Platform.isAndroid) {
+      await _requestPermission();
+    }
+
+    if (!value.isGranted) {
       final bool? shouldOpenSettings = await onRationaleNotAvailable.call();
 
       if (shouldOpenSettings == true) {
         await openAppSettings();
-        return checkPermission();
+        await _requestPermission();
       }
     }
+
+    _status = _DevicePermissionStatus.answered;
   }
 
-  void _onNewPermissionStatus(PermissionStatus status) {
+  Future<void> _requestPermission() async {
+    final PermissionStatus status = await permission.request();
+
     value = DevicePermission._fromPermissionStatus(
       permission,
       status,
+    );
+  }
+
+  @override
+  set value(DevicePermission newValue) {
+    super.value = newValue;
+
+    Logs.d(
+      'New permission value: ${newValue.toString()}',
+      tag: 'PermissionListener',
     );
   }
 }
@@ -90,4 +139,15 @@ enum DevicePermissionStatus {
   restricted,
   limited,
   permanentlyDenied,
+}
+
+/// Enum allowing to track the status of the [askPermission] method
+enum _DevicePermissionStatus {
+  // Never called
+  initial,
+  // Call in progress
+  asked,
+  // Finished
+  // /!\ it doesn't mean the permission is granted
+  answered,
 }

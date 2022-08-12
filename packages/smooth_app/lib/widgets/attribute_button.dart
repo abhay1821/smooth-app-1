@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openfoodfacts/model/Attribute.dart';
 import 'package:openfoodfacts/personalized_search/preference_importance.dart';
 import 'package:smooth_app/data_models/product_preferences.dart';
-import 'package:smooth_app/generic_lib/buttons/smooth_action_button.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
 
@@ -39,46 +38,34 @@ class AttributeButton extends StatelessWidget {
     final List<Widget> children = <Widget>[];
     for (final String importanceId in _importanceIds) {
       children.add(
-        GestureDetector(
-          onTap: () async {
-            await productPreferences.setImportance(attribute.id!, importanceId);
-            final AppLocalizations? appLocalizations =
-                AppLocalizations.of(context);
-            await showDialog<void>(
-              context: context,
-              builder: (BuildContext context) => SmoothAlertDialog(
-                body: Text(
-                    'blah blah blah importance "$importanceId"'), // TODO(monsieurtanuki): find translations
-                actions: <SmoothActionButton>[
-                  SmoothActionButton(
-                    text: appLocalizations!.close,
-                    onPressed: () => Navigator.pop(context),
+        Expanded(
+          child: InkWell(
+            onTap: () async => productPreferences.setImportance(
+              attribute.id!,
+              importanceId,
+            ),
+            child: Container(
+              width: importanceWidth,
+              constraints: const BoxConstraints(minHeight: MINIMUM_TOUCH_SIZE),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    currentImportanceId == importanceId
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_off,
+                    color: themeData.colorScheme.primary,
+                  ),
+                  AutoSizeText(
+                    productPreferences
+                        .getPreferenceImportanceFromImportanceId(importanceId)!
+                        .name!,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
-            );
-          },
-          child: Container(
-            width: importanceWidth,
-            constraints: const BoxConstraints(minHeight: MINIMUM_TARGET_SIZE),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  currentImportanceId == importanceId
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_off,
-                  color: themeData.colorScheme.primary,
-                ),
-                AutoSizeText(
-                  productPreferences
-                      .getPreferenceImportanceFromImportanceId(importanceId)!
-                      .name!,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
-              ],
             ),
           ),
         ),
@@ -105,16 +92,14 @@ class AttributeButton extends StatelessWidget {
                 : () async => showDialog<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        final AppLocalizations? appLocalizations =
+                        final AppLocalizations appLocalizations =
                             AppLocalizations.of(context);
                         return SmoothAlertDialog(
                           body: Text(info),
-                          actions: <SmoothActionButton>[
-                            SmoothActionButton(
-                              text: appLocalizations!.close,
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
+                          positiveAction: SmoothActionButton(
+                            text: appLocalizations.close,
+                            onPressed: () => Navigator.pop(context),
+                          ),
                         );
                       },
                     ),

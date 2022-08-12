@@ -5,8 +5,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 class ScreenVisibilityDetector extends StatefulWidget {
   const ScreenVisibilityDetector({
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
 
@@ -16,6 +16,8 @@ class ScreenVisibilityDetector extends StatefulWidget {
 
   static bool visible(BuildContext context) =>
       context.read<ScreenVisibility>().isVisible;
+
+  static bool invisible(BuildContext context) => !visible(context);
 }
 
 class _ScreenVisibilityDetectorState extends State<ScreenVisibilityDetector> {
@@ -23,13 +25,13 @@ class _ScreenVisibilityDetectorState extends State<ScreenVisibilityDetector> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ScreenVisibility>.value(
-      value: _notifier,
-      child: VisibilityDetector(
-        key: const ValueKey<String>('ScreenVisibility'),
-        onVisibilityChanged: (VisibilityInfo info) {
-          _notifier.updateValue(info);
-        },
+    return VisibilityDetector(
+      key: const ValueKey<String>('ScreenVisibility'),
+      onVisibilityChanged: (VisibilityInfo info) {
+        _notifier.updateValue(info);
+      },
+      child: ChangeNotifierProvider<ScreenVisibility>.value(
+        value: _notifier,
         child: widget.child,
       ),
     );
@@ -37,7 +39,7 @@ class _ScreenVisibilityDetectorState extends State<ScreenVisibilityDetector> {
 }
 
 class ScreenVisibility extends ValueNotifier<bool> {
-  ScreenVisibility(bool value) : super(value);
+  ScreenVisibility(super.value);
 
   bool get isVisible => value;
 

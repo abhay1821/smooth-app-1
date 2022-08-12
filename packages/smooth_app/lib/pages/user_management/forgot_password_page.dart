@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import 'package:provider/provider.dart';
-import 'package:smooth_app/data_models/user_preferences.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_text_form_field.dart';
-import 'package:smooth_app/themes/theme_provider.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+  const ForgotPasswordPage();
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  int _devModeCounter = 0;
-
-  static Color _textFieldBackgroundColor = const Color.fromARGB(
-    255,
-    240,
-    240,
-    240,
-  );
-
+class _ForgotPasswordPageState extends State<ForgotPasswordPage>
+    with TraceableClientMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _userIdController = TextEditingController();
 
@@ -33,7 +24,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   String _message = '';
 
   Future<void> _resetPassword() async {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -59,6 +50,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   @override
+  String get traceTitle => 'forgot_password_page';
+
+  @override
+  String get traceName => 'Opened forgot_password_page';
+
+  @override
   void dispose() {
     _userIdController.dispose();
     super.dispose();
@@ -67,18 +64,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    final UserPreferences userPreferences = context.watch<UserPreferences>();
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     final Size size = MediaQuery.of(context).size;
-    final bool isDarkMode =
-        Provider.of<ThemeProvider>(context, listen: false).isDarkMode(context);
 
-    // Needs to be changed
-    if (isDarkMode) {
-      _textFieldBackgroundColor = Colors.white10;
-    }
-
-    return Scaffold(
+    return SmoothScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -104,7 +93,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     style: theme.textTheme.headline1?.copyWith(
                       fontSize: 25.0,
                       fontWeight: FontWeight.w700,
-                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   const Spacer(flex: 1),
@@ -131,8 +119,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       controller: _userIdController,
                       hintText: appLocalizations.username_or_email,
                       hintTextFontSize: 15.0,
-                      textColor: Colors.grey,
-                      backgroundColor: _textFieldBackgroundColor,
                       enabled: !_runningQuery,
                       prefixIcon: const Icon(Icons.email),
                       textInputAction: TextInputAction.done,
@@ -142,67 +128,44 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ],
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          _devModeCounter++;
-                          if (_devModeCounter >= 10) {
-                            if (userPreferences.devMode == 0) {
-                              showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: Text(
-                                    appLocalizations
-                                        .enable_dev_mode_dialog_title,
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text(appLocalizations.yes),
-                                      onPressed: () async {
-                                        await userPreferences.setDevMode(1);
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text(appLocalizations.no),
-                                      onPressed: () => Navigator.pop(context),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }
-                          }
                           return appLocalizations.enter_some_text;
                         }
                         return null;
                       },
                     ),
                   const Spacer(flex: 4),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_send == false) {
-                        _resetPassword();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text(
-                      _send
-                          ? appLocalizations.close
-                          : appLocalizations.send_reset_password_mail,
-                      style: theme.textTheme.bodyText2?.copyWith(
-                        fontSize: 18.0,
-                        color: theme.colorScheme.surface,
+                  if (_runningQuery)
+                    const CircularProgressIndicator()
+                  else
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_send == false) {
+                          _resetPassword();
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all<Size>(
+                          Size(size.width * 0.5, theme.buttonTheme.height + 10),
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                            borderRadius: CIRCULAR_BORDER_RADIUS,
+                          ),
+                        ),
                       ),
-                    ),
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        Size(size.width * 0.5, theme.buttonTheme.height + 10),
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                          borderRadius: CIRCULAR_BORDER_RADIUS,
+                      child: Text(
+                        _send
+                            ? appLocalizations.close
+                            : appLocalizations.send_reset_password_mail,
+                        style: theme.textTheme.bodyText2?.copyWith(
+                          fontSize: 18.0,
+                          color: theme.colorScheme.onPrimary,
                         ),
                       ),
                     ),
-                  ),
                   const Spacer(flex: 4),
                 ],
               ),

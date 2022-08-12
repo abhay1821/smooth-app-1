@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_app/pages/history_page.dart';
 import 'package:smooth_app/pages/page_manager.dart';
+import 'package:smooth_app/pages/preferences/user_preferences_page.dart';
 import 'package:smooth_app/pages/scan/scan_page.dart';
-import 'package:smooth_app/pages/user_preferences_page.dart';
 
 class TabNavigator extends StatelessWidget {
   const TabNavigator({
     required this.navigatorKey,
     required this.tabItem,
-    required this.offstage,
   });
+
   final GlobalKey<NavigatorState> navigatorKey;
   final BottomNavigationTab tabItem;
-  final bool offstage;
 
   @override
   Widget build(BuildContext context) {

@@ -1,24 +1,28 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
+import 'package:openfoodfacts/personalized_search/matched_product_v2.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_app/cards/product_cards/smooth_product_card_found.dart';
+import 'package:smooth_app/data_models/personalized_ranking_model.dart';
 import 'package:smooth_app/data_models/product_preferences.dart';
-import 'package:smooth_app/data_models/smooth_it_model.dart';
-import 'package:smooth_app/data_models/user_preferences.dart';
-import 'package:smooth_app/database/dao_product_list.dart';
+import 'package:smooth_app/data_models/up_to_date_product_provider.dart';
 import 'package:smooth_app/database/local_database.dart';
+import 'package:smooth_app/generic_lib/buttons/smooth_large_button_with_icon.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/helpers/analytics_helper.dart';
-import 'package:smooth_app/helpers/smooth_matched_product.dart';
+import 'package:smooth_app/helpers/product_compatibility_helper.dart';
+import 'package:smooth_app/pages/product/common/product_list_item_simple.dart';
+import 'package:smooth_app/pages/tmp_matched_product_v2.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
 class PersonalizedRankingPage extends StatefulWidget {
   const PersonalizedRankingPage({
-    required this.products,
+    required this.barcodes,
     required this.title,
   });
 
-  final List<Product> products;
+  final List<String> barcodes;
   final String title;
 
   @override
@@ -26,127 +30,148 @@ class PersonalizedRankingPage extends StatefulWidget {
       _PersonalizedRankingPageState();
 }
 
-class _PersonalizedRankingPageState extends State<PersonalizedRankingPage> {
-  static const Map<MatchTab, Color> _COLORS = <MatchTab, Color>{
-    MatchTab.YES: Colors.green,
-    MatchTab.MAYBE: Colors.grey,
-    MatchTab.NO: Colors.red,
-    MatchTab.ALL: Colors.black,
-  };
+class _PersonalizedRankingPageState extends State<PersonalizedRankingPage>
+    with TraceableClientMixin {
+  @override
+  String get traceName => 'Opened personalized ranking page'; // optional
 
-  static const List<MatchTab> _ORDERED_MATCH_TABS = <MatchTab>[
-    MatchTab.ALL,
-    MatchTab.YES,
-    MatchTab.NO,
-    MatchTab.MAYBE,
-  ];
+  @override
+  String get traceTitle => 'personalized_ranking_page';
 
-  final SmoothItModel _model = SmoothItModel();
+  static const int _backgroundAlpha = 51;
+
+  late final PersonalizedRankingModel _model;
+
+  List<String>? _compactPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    _model = PersonalizedRankingModel(widget.barcodes);
+  }
 
   @override
   Widget build(BuildContext context) {
     final ProductPreferences productPreferences =
         context.watch<ProductPreferences>();
-    final LocalDatabase localDatabase = context.watch<LocalDatabase>();
-    final DaoProductList daoProductList = DaoProductList(localDatabase);
-    final ThemeData themeData = Theme.of(context);
-    final ColorScheme colorScheme = themeData.colorScheme;
-    _model.refresh(
-      widget.products,
-      productPreferences,
-      context.watch<UserPreferences>(),
-    );
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    final List<Color> colors = <Color>[];
-    final List<String> titles = <String>[];
-    final List<List<MatchedProduct>> matchedProductsList =
-        <List<MatchedProduct>>[];
-    for (final MatchTab matchTab in _ORDERED_MATCH_TABS) {
-      final List<MatchedProduct> products = _model.getMatchedProducts(matchTab);
-      matchedProductsList.add(products);
-      titles.add(
-        matchTab == MatchTab.ALL
-            ? appLocalizations.ranking_tab_all
-            : products.length.toString(),
-      );
-      colors.add(_COLORS[matchTab]!);
-    }
-
-    AnalyticsHelper.trackPersonalizedRanking(
-      title: widget.title,
-      products: matchedProductsList[0].length,
-      goodProducts: matchedProductsList[1].length,
-      badProducts: matchedProductsList[2].length,
-      unknownProducts: matchedProductsList[3].length,
-    );
-
-    return DefaultTabController(
-      length: _ORDERED_MATCH_TABS.length,
-      initialIndex: _ORDERED_MATCH_TABS.indexOf(MatchTab.YES),
-      child: Scaffold(
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    return Consumer<UpToDateProductProvider>(
+      builder: (
+        final BuildContext context,
+        final UpToDateProductProvider upToDateProductProvider,
+        final Widget? child,
+      ) =>
+          SmoothScaffold(
         appBar: AppBar(
-          backgroundColor: colorScheme.background,
-          foregroundColor: colorScheme.onBackground,
-          bottom: TabBar(
-            unselectedLabelStyle: const TextStyle(
-              fontSize: 15,
-            ),
-            labelStyle: const TextStyle(
-              fontSize: 20,
-              decoration: TextDecoration.underline,
-            ),
-            indicator: const BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Colors.grey), // provides to left side
-                right: BorderSide(color: Colors.grey), // for right side
-              ),
-            ),
-            isScrollable: false,
-            tabs: <Tab>[
-              ...List<Tab>.generate(
-                _ORDERED_MATCH_TABS.length,
-                (final int index) => Tab(
-                  child: Text(
-                    titles[index],
-                    style: index == 0
-                        ? TextStyle(color: themeData.hintColor)
-                        : TextStyle(color: colors[index]),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          title: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  widget.title,
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-            ],
-          ),
+          title: Text(widget.title, overflow: TextOverflow.fade),
         ),
-        body: TabBarView(
-          children: List<Widget>.generate(
-            _ORDERED_MATCH_TABS.length,
-            (final int index) => _getStickyHeader(
-              _ORDERED_MATCH_TABS[index],
-              matchedProductsList[index],
+        body: ChangeNotifierProvider<PersonalizedRankingModel>(
+          create: (final BuildContext context) => _model,
+          builder: (final BuildContext context, final Widget? wtf) {
+            context.watch<PersonalizedRankingModel>();
+            final List<String> compactPreferences =
+                productPreferences.getCompactView();
+            if (_compactPreferences == null) {
+              _compactPreferences = compactPreferences;
+              _model.refresh(context.read<LocalDatabase>(), productPreferences);
+            } else {
+              bool refresh = !_compactPreferences!.equals(compactPreferences);
+              if (!refresh) {
+                refresh = _model.needsRefresh(upToDateProductProvider);
+              }
+              if (refresh) {
+                // TODO(monsieurtanuki): could maybe be automatic with VisibilityDetector
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SMALL_SPACE),
+                    child: SmoothLargeButtonWithIcon(
+                      icon: Icons.refresh,
+                      text: appLocalizations.refresh_with_new_preferences,
+                      onPressed: () {
+                        _compactPreferences = compactPreferences;
+                        _model.refresh(
+                            context.read<LocalDatabase>(), productPreferences);
+                      },
+                    ),
+                  ),
+                );
+              }
+            }
+            if (_model.loadingStatus == LoadingStatus.LOADING) {
+              return Center(
+                child: CircularProgressIndicator(
+                  value: _model.getLoadingProgress() ?? 1,
+                ),
+              );
+            }
+            if (_model.loadingStatus != LoadingStatus.LOADED) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            AnalyticsHelper.trackPersonalizedRanking(widget.barcodes.length);
+            MatchedProductStatusV2? status;
+            final List<_VirtualItem> list = <_VirtualItem>[];
+            for (final MatchedScoreV2 score in _model.scores) {
+              if (status == null || status != score.status) {
+                status = score.status;
+                list.add(_VirtualItem.status(status));
+              }
+              list.add(_VirtualItem.score(score));
+            }
+            final bool darkMode =
+                Theme.of(context).brightness == Brightness.dark;
+            return ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (BuildContext context, int index) => _buildItem(
+                list[index],
+                appLocalizations,
+                darkMode,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItem(
+    final _VirtualItem item,
+    final AppLocalizations appLocalizations,
+    final bool darkMode,
+  ) =>
+      item.status != null
+          ? _buildHeader(
+              item.status!,
               appLocalizations,
-              daoProductList,
-            ),
-          ),
+              darkMode,
+            )
+          : _buildSmoothProductCard(
+              item.score!,
+              appLocalizations,
+              darkMode,
+            );
+
+  Widget _buildHeader(
+    final MatchedProductStatusV2 status,
+    final AppLocalizations appLocalizations,
+    final bool darkMode,
+  ) {
+    final ProductCompatibilityHelper helper =
+        ProductCompatibilityHelper.status(status);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(SMALL_SPACE),
+        child: Text(
+          helper.getHeaderText(appLocalizations),
+          style: Theme.of(context).textTheme.subtitle1,
         ),
       ),
     );
   }
 
   Widget _buildSmoothProductCard(
-    final MatchedProduct matchedProduct,
-    final DaoProductList daoProductList,
+    final MatchedScoreV2 matchedProduct,
     final AppLocalizations appLocalizations,
+    final bool darkMode,
   ) =>
       Dismissible(
         direction: DismissDirection.endToStart,
@@ -154,106 +179,42 @@ class _PersonalizedRankingPageState extends State<PersonalizedRankingPage> {
           alignment: Alignment.centerRight,
           margin: const EdgeInsets.symmetric(vertical: 14),
           color: RED_COLOR,
-          padding: const EdgeInsets.only(right: 30),
+          padding: const EdgeInsetsDirectional.only(end: 30),
           child: const Icon(
             Icons.delete,
             color: Colors.white,
           ),
         ),
-        key: Key(matchedProduct.product.barcode!),
-        onDismissed: (final DismissDirection direction) async {
-          final bool removed = widget.products.remove(matchedProduct.product);
-          if (removed) {
-            setState(() {});
-          }
+        key: Key(matchedProduct.barcode),
+        onDismissed: (final DismissDirection direction) {
+          _model.dismiss(matchedProduct.barcode);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                removed
-                    ? appLocalizations.product_removed_comparison
-                    : appLocalizations.product_could_not_remove,
-              ),
+              content: Text(appLocalizations.product_removed_comparison),
               duration: const Duration(seconds: 3),
             ),
           );
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-          child: SmoothProductCardFound(
-            heroTag: matchedProduct.product.barcode!,
-            product: matchedProduct.product,
-            elevation: 4.0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: MEDIUM_SPACE,
+            vertical: SMALL_SPACE,
+          ),
+          child: ProductListItemSimple(
+            barcode: matchedProduct.barcode,
+            backgroundColor:
+                ProductCompatibilityHelper.status(matchedProduct.status)
+                    .getHeaderBackgroundColor(darkMode)
+                    .withAlpha(_backgroundAlpha),
           ),
         ),
       );
+}
 
-  Widget _getStickyHeader(
-    final MatchTab matchTab,
-    final List<MatchedProduct> matchedProducts,
-    final AppLocalizations appLocalizations,
-    final DaoProductList daoProductList,
-  ) {
-    final Widget? subtitleWidget = _getSubtitleWidget(
-      _COLORS[matchTab],
-      _getSubtitle(matchTab, appLocalizations),
-    );
-    if (matchedProducts.isEmpty) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          subtitleWidget ?? Container(),
-          Text(
-            appLocalizations.no_product_in_section,
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Container(),
-        ],
-      );
-    }
-    final int additional = subtitleWidget == null ? 0 : 1;
-    return ListView.builder(
-      itemCount: matchedProducts.length + additional,
-      itemBuilder: (BuildContext context, int index) => index < additional
-          ? subtitleWidget!
-          : _buildSmoothProductCard(
-              matchedProducts[index - additional],
-              daoProductList,
-              appLocalizations,
-            ),
-    );
-  }
-
-  Widget? _getSubtitleWidget(
-    final Color? color,
-    final String? subtitle,
-  ) =>
-      subtitle == null
-          ? null
-          : Container(
-              padding: const EdgeInsets.all(8),
-              child: Center(
-                child: Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              color: color,
-            );
-
-  String? _getSubtitle(
-    final MatchTab matchTab,
-    final AppLocalizations appLocalizations,
-  ) {
-    switch (matchTab) {
-      case MatchTab.ALL:
-        return null;
-      case MatchTab.MAYBE:
-        return appLocalizations.ranking_subtitle_match_maybe;
-      case MatchTab.YES:
-        return appLocalizations.ranking_subtitle_match_yes;
-      case MatchTab.NO:
-        return appLocalizations.ranking_subtitle_match_no;
-    }
-  }
+/// Virtual item in the list: either a product or a status header
+class _VirtualItem {
+  const _VirtualItem.score(this.score) : status = null;
+  const _VirtualItem.status(this.status) : score = null;
+  final MatchedScoreV2? score;
+  final MatchedProductStatusV2? status;
 }

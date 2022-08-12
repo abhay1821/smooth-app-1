@@ -1,22 +1,19 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_app/data_models/continuous_scan_model.dart';
-import 'package:smooth_app/data_models/user_preferences.dart';
-import 'package:smooth_app/generic_lib/buttons/smooth_action_button.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
+import 'package:smooth_app/helpers/camera_helper.dart';
 import 'package:smooth_app/helpers/permission_helper.dart';
-import 'package:smooth_app/pages/scan/continuous_scan_page.dart';
 import 'package:smooth_app/pages/scan/ml_kit_scan_page.dart';
+import 'package:smooth_app/pages/scan/scan_visor.dart';
 import 'package:smooth_app/pages/scan/scanner_overlay.dart';
-import 'package:smooth_app/pages/user_preferences_dev_mode.dart';
 import 'package:smooth_app/widgets/smooth_product_carousel.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage();
@@ -49,18 +46,12 @@ class _ScanPageState extends State<ScanPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        body: ChangeNotifierProvider<PermissionListener>(
-          create: (_) => PermissionListener(
-            permission: Permission.camera,
-          ),
-          child: const ScannerOverlay(
-            backgroundChild: _ScanPageBackgroundWidget(),
-            topChild: _ScanPageTopWidget(),
-          ),
-        ),
+    return SmoothScaffold(
+      brightness: Brightness.light,
+      body: ScannerOverlay(
+        backgroundChild: const _ScanPageBackgroundWidget(),
+        foregroundChild: const _ScanPageForegroundWidget(),
+        topChild: const _ScanPageTopWidget(),
       ),
     );
   }
@@ -73,23 +64,96 @@ class _ScanPageBackgroundWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PermissionListener>(
       builder: (BuildContext context, PermissionListener listener, _) {
-        final UserPreferences userPreferences = context.read<UserPreferences>();
-
         if (listener.value.isGranted) {
-          if (userPreferences.getFlag(
-                UserPreferencesDevMode.userPreferencesFlagUseMLKit,
-              ) ??
-              true) {
-            return const MLKitScannerPage();
-          } else {
-            return const ContinuousScanPage();
-          }
+          return const MLKitScannerPage();
         } else {
           return const SizedBox();
         }
       },
     );
   }
+}
+
+/// A semi-transparent Widget where the visor is fully visible
+class _ScanPageForegroundWidget extends StatelessWidget {
+  const _ScanPageForegroundWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Consumer<PermissionListener>(
+            builder: (BuildContext context, PermissionListener listener, _) {
+          // If permission is granted && the device has a camera
+          if (listener.value.isGranted && CameraHelper.hasACamera) {
+            return CustomPaint(
+              painter: _ScanPageForegroundPainter(
+                visorSize: ScannerVisorWidget.getSize(context),
+                carouselHeight:
+                    constraints.maxHeight * ScannerOverlay.carouselHeightPct,
+                contentHeight: constraints.maxHeight,
+                topOffset: MediaQuery.of(context).viewPadding.top,
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        });
+      },
+    );
+  }
+}
+
+class _ScanPageForegroundPainter extends CustomPainter {
+  _ScanPageForegroundPainter({
+    required this.visorSize,
+    required this.topOffset,
+    required double carouselHeight,
+    required double contentHeight,
+  })  : availableHeightBeforeCarousel =
+            contentHeight - carouselHeight - topOffset,
+        _paint = Paint()..color = Colors.black.withOpacity(0.3);
+
+  final Size visorSize;
+  final double topOffset;
+  final double availableHeightBeforeCarousel;
+
+  final Paint _paint;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Path path = Path.combine(
+      PathOperation.difference,
+      Path()
+        ..lineTo(size.width, 0)
+        ..lineTo(size.width, size.height)
+        ..lineTo(0, size.height)
+        ..close(),
+      ScanVisorPainter.getPath(
+        Rect.fromLTWH(
+          (size.width - visorSize.width) / 2,
+          0,
+          visorSize.width,
+          visorSize.height,
+        ),
+        true,
+      ).shift(
+        Offset(
+          0,
+          topOffset +
+              ((availableHeightBeforeCarousel -
+                      visorSize.height +
+                      ScanVisorPainter.strokeWidth) /
+                  2),
+        ),
+      ),
+    );
+
+    canvas.drawPath(path, _paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _ScanPageTopWidget extends StatelessWidget {
@@ -102,7 +166,7 @@ class _ScanPageTopWidget extends StatelessWidget {
         if (listener.value.isGranted) {
           return const ScannerVisorWidget();
         } else {
-          final AppLocalizations localizations = AppLocalizations.of(context)!;
+          final AppLocalizations localizations = AppLocalizations.of(context);
 
           return SafeArea(
             child: LayoutBuilder(
@@ -118,8 +182,8 @@ class _ScanPageTopWidget extends StatelessWidget {
                   child: SmoothCard(
                     padding: const EdgeInsetsDirectional.only(
                       top: 10.0,
-                      start: 8.0,
-                      end: 8.0,
+                      start: SMALL_SPACE,
+                      end: SMALL_SPACE,
                       bottom: 5.0,
                     ),
                     child: Align(
@@ -154,9 +218,12 @@ class _ScanPageTopWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SmoothActionButton(
-                            text: localizations.permission_photo_denied_button,
-                            onPressed: () => _askPermission(context),
+                          SmoothActionButtonsBar.single(
+                            action: SmoothActionButton(
+                              text:
+                                  localizations.permission_photo_denied_button,
+                              onPressed: () => _askPermission(context),
+                            ),
                           ),
                         ],
                       ),
@@ -179,8 +246,7 @@ class _ScanPageTopWidget extends StatelessWidget {
       return showDialog(
           context: context,
           builder: (BuildContext context) {
-            final AppLocalizations localizations =
-                AppLocalizations.of(context)!;
+            final AppLocalizations localizations = AppLocalizations.of(context);
 
             return SmoothAlertDialog(
               title:
@@ -191,18 +257,18 @@ class _ScanPageTopWidget extends StatelessWidget {
                   height: 1.6,
                 ),
               ),
-              actions: <SmoothActionButton>[
-                SmoothActionButton(
-                  text: localizations
-                      .permission_photo_denied_dialog_settings_button_cancel,
-                  onPressed: () => Navigator.of(context).pop(false),
-                ),
-                SmoothActionButton(
-                  text: localizations
-                      .permission_photo_denied_dialog_settings_button_open,
-                  onPressed: () => Navigator.of(context).pop(true),
-                ),
-              ],
+              negativeAction: SmoothActionButton(
+                text: localizations
+                    .permission_photo_denied_dialog_settings_button_cancel,
+                onPressed: () => Navigator.of(context).pop(false),
+                lines: 2,
+              ),
+              positiveAction: SmoothActionButton(
+                text: localizations
+                    .permission_photo_denied_dialog_settings_button_open,
+                onPressed: () => Navigator.of(context).pop(true),
+                lines: 2,
+              ),
             );
           });
     });

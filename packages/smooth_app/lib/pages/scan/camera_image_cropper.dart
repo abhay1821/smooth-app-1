@@ -1,7 +1,8 @@
 import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:google_ml_barcode_scanner/google_ml_barcode_scanner.dart';
+import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:smooth_app/pages/scan/abstract_camera_image_getter.dart';
 import 'package:typed_data/typed_buffers.dart';
 
@@ -15,13 +16,13 @@ import 'package:typed_data/typed_buffers.dart';
 /// * left01: .5, top01: .5, width01: .5, height01: ..5 the bottom right rect
 class CameraImageCropper extends AbstractCameraImageGetter {
   CameraImageCropper(
-    final CameraImage cameraImage,
-    final CameraDescription cameraDescription, {
+    super.cameraImage,
+    super.cameraDescription, {
     required this.left01,
     required this.top01,
     required this.width01,
     required this.height01,
-  }) : super(cameraImage, cameraDescription) {
+  }) {
     _computeCropParameters();
   }
 
@@ -34,6 +35,8 @@ class CameraImageCropper extends AbstractCameraImageGetter {
   late int _width;
   late int _height;
 
+  int _getEven(final double value) => 2 * (value ~/ 2);
+
   void _computeCropParameters() {
     assert(width01 > 0 && width01 <= 1);
     assert(height01 > 0 && height01 <= 1);
@@ -45,8 +48,6 @@ class CameraImageCropper extends AbstractCameraImageGetter {
     final int fullWidth = cameraImage.width;
     final int fullHeight = cameraImage.height;
     final int orientation = cameraDescription.sensorOrientation;
-
-    int _getEven(final double value) => 2 * (value ~/ 2);
 
     if (orientation == 0) {
       _width = _getEven(fullWidth * width01);

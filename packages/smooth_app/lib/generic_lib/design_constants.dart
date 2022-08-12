@@ -9,13 +9,12 @@ const double SMALL_SPACE = 8.0;
 const double MEDIUM_SPACE = 12.0;
 const double LARGE_SPACE = 16.0;
 const double VERY_LARGE_SPACE = 20.0;
-const double MINIMUM_TOUCH_SIZE = 48.0;
+
+/// Standard minimum touch/target size, cf. goldens.dart
+const double MINIMUM_TOUCH_SIZE = kMinInteractiveDimension;
 
 /// Default icon size, cf. [Icon]
 const double DEFAULT_ICON_SIZE = 24.0;
-
-/// Default icon size, cf. goldens.dart
-const double MINIMUM_TARGET_SIZE = 48.0;
 
 /// Background, e.g SmoothCard
 const Radius ROUNDED_RADIUS = Radius.circular(20.0);
@@ -36,6 +35,7 @@ const BorderRadius CIRCULAR_BORDER_RADIUS = BorderRadius.all(CIRCULAR_RADIUS);
 const MaterialColor WARNING_COLOR = Colors.deepOrange;
 const Color PRIMARY_BLUE_COLOR = Color(0xFF2D9CDB);
 const Color PRIMARY_GREY_COLOR = Color(0xFF4F4F4F);
+const Color FAIR_GREY_COLOR = Color(0xFF888888);
 const Color GREY_COLOR = Color(0xFFF2F2F2);
 const Color WHITE_COLOR = Color(0xFFFFFFFF);
 const Color DARK_GREEN_COLOR = Color(0xFF219653);

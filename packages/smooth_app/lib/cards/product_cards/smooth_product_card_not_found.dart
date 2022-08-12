@@ -18,11 +18,16 @@ class SmoothProductCardNotFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final ThemeData themeData = Theme.of(context);
+
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return SmoothCard(
         elevation: elevation,
+        color: themeData.brightness == Brightness.light
+            ? Colors.white
+            : Colors.black,
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: constraints.maxHeight * 0.10,
@@ -42,8 +47,13 @@ class SmoothProductCardNotFound extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText2,
               ),
+              Text(
+                '(${appLocalizations.barcode_barcode(barcode)})',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
               Padding(
-                padding: const EdgeInsets.only(top: LARGE_SPACE),
+                padding: const EdgeInsetsDirectional.only(top: LARGE_SPACE),
                 child: SmoothLargeButtonWithIcon(
                   text: appLocalizations.add_product_information_button_label,
                   icon: Icons.add,

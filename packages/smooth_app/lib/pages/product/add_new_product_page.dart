@@ -4,15 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:openfoodfacts/model/ProductImage.dart';
-import 'package:smooth_app/generic_lib/buttons/smooth_action_button.dart';
 import 'package:smooth_app/generic_lib/buttons/smooth_large_button_with_icon.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
+import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
 import 'package:smooth_app/pages/image_crop_page.dart';
+import 'package:smooth_app/pages/product/add_basic_details_page.dart';
 import 'package:smooth_app/pages/product/confirm_and_upload_picture.dart';
 import 'package:smooth_app/pages/product/nutrition_page_loaded.dart';
 import 'package:smooth_app/pages/product/ordered_nutrients_cache.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
-const EdgeInsets _ROW_PADDING_TOP = EdgeInsets.only(top: VERY_LARGE_SPACE);
+const EdgeInsetsGeometry _ROW_PADDING_TOP = EdgeInsetsDirectional.only(
+  top: VERY_LARGE_SPACE,
+);
 
 // Buttons to add images will appear in this order.
 const List<ImageField> _SORTED_IMAGE_FIELD_LIST = <ImageField>[
@@ -24,9 +28,7 @@ const List<ImageField> _SORTED_IMAGE_FIELD_LIST = <ImageField>[
 ];
 
 class AddNewProductPage extends StatefulWidget {
-  const AddNewProductPage(
-    this.barcode,
-  );
+  const AddNewProductPage(this.barcode);
 
   final String barcode;
 
@@ -39,19 +41,22 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
       <ImageField, List<File>>{};
 
   bool _nutritionFactsAdded = false;
+  bool _basicDetailsAdded = false;
   bool _isProductLoaded = false;
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: !_isProductLoaded),
+    return SmoothScaffold(
+      appBar: AppBar(
+          title: Text(appLocalizations.new_product),
+          automaticallyImplyLeading: !_isProductLoaded),
       body: Padding(
-        padding: const EdgeInsets.only(
+        padding: const EdgeInsetsDirectional.only(
           top: VERY_LARGE_SPACE,
-          left: VERY_LARGE_SPACE,
-          right: VERY_LARGE_SPACE,
+          start: VERY_LARGE_SPACE,
+          end: VERY_LARGE_SPACE,
         ),
         child: Stack(
           children: <Widget>[
@@ -60,32 +65,27 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    appLocalizations.new_product,
-                    style: themeData.textTheme.headline1!
-                        .apply(color: themeData.colorScheme.onSurface),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: VERY_LARGE_SPACE),
-                  ),
-                  Text(
                     appLocalizations.add_product_take_photos_descriptive,
                     style: themeData.textTheme.bodyText1!
-                        .apply(color: themeData.colorScheme.onSurface),
+                        .apply(color: themeData.colorScheme.onBackground),
                   ),
                   ..._buildImageCaptureRows(context),
                   _buildNutritionInputButton(),
+                  _buildaddInputDetailsButton()
                 ],
               ),
             ),
             Positioned(
               child: Align(
-                alignment: Alignment.bottomRight,
-                child: SmoothActionButton(
-                  text: appLocalizations.finish,
-                  onPressed: () {
-                    Navigator.maybePop(
-                        context, _isProductLoaded ? widget.barcode : null);
-                  },
+                alignment: Alignment.bottomCenter,
+                child: SmoothActionButtonsBar.single(
+                  action: SmoothActionButton(
+                    text: appLocalizations.finish,
+                    onPressed: () async {
+                      await Navigator.maybePop(
+                          context, _isProductLoaded ? widget.barcode : null);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -103,20 +103,25 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
       // "other photos" uploaded by the user.
       if (imageType == ImageField.OTHER) {
         rows.add(_buildAddImageButton(context, imageType));
+        if (_uploadedImages[imageType] != null) {
+          for (final File image in _uploadedImages[imageType]!) {
+            rows.add(_buildImageUploadedRow(context, imageType, image));
+          }
+        }
         continue;
       }
-      // Everything else can only be uploaded once, skip building the
-      // "Add Image button" if an image for this type is already uploaded.
-      if (!_isImageUploadedForType(imageType)) {
-        rows.add(_buildAddImageButton(context, imageType));
-      }
-    }
-    // Now build rows for images that are already uploaded.
-    for (final ImageField imageType in ImageField.values) {
+
+      // Everything else can only be uploaded once
       if (_isImageUploadedForType(imageType)) {
-        for (final File image in _uploadedImages[imageType]!) {
-          rows.add(_buildImageUploadedRow(context, imageType, image));
-        }
+        rows.add(
+          _buildImageUploadedRow(
+            context,
+            imageType,
+            _uploadedImages[imageType]![0],
+          ),
+        );
+      } else {
+        rows.add(_buildAddImageButton(context, imageType));
       }
     }
     return rows;
@@ -135,6 +140,7 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
           }
           // Photo can change in the ConfirmAndUploadPicture widget, the user
           // may choose to retake the image.
+          //ignore: use_build_context_synchronously
           final File? finalPhoto = await Navigator.push<File?>(
             context,
             MaterialPageRoute<File?>(
@@ -176,7 +182,7 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
   }
 
   String _getAddPhotoButtonText(BuildContext context, ImageField imageType) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     switch (imageType) {
       case ImageField.FRONT:
         return appLocalizations.front_packaging_photo_button_label;
@@ -193,7 +199,7 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
 
   String _getPhotoUploadedLabelText(
       BuildContext context, ImageField imageType) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     switch (imageType) {
       case ImageField.FRONT:
         return appLocalizations.front_photo_uploaded;
@@ -230,7 +236,7 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
               Expanded(
                 child: Center(
                   child: Text(
-                      AppLocalizations.of(context)!.nutritional_facts_added,
+                      AppLocalizations.of(context).nutritional_facts_added,
                       style: Theme.of(context).textTheme.bodyText1),
                 ),
               ),
@@ -241,34 +247,88 @@ class _AddNewProductPageState extends State<AddNewProductPage> {
     return Padding(
       padding: _ROW_PADDING_TOP,
       child: SmoothLargeButtonWithIcon(
-        text:
-            AppLocalizations.of(context)!.nutritional_facts_input_button_label,
+        text: AppLocalizations.of(context).nutritional_facts_input_button_label,
         icon: Icons.edit,
         onPressed: () async {
           final OrderedNutrientsCache? cache =
               await OrderedNutrientsCache.getCache(context);
           if (cache == null) {
+            if (!mounted) {
+              return;
+            }
             final SnackBar snackBar = SnackBar(
               content: Text(
-                  AppLocalizations.of(context)!.nutrition_cache_loading_error),
+                  AppLocalizations.of(context).nutrition_cache_loading_error),
             );
+            if (!mounted) {
+              return;
+            }
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             return;
           }
-
-          final bool result = await Navigator.push<bool>(
-                context,
-                MaterialPageRoute<bool>(
-                  builder: (BuildContext context) => NutritionPageLoaded(
-                    Product(barcode: widget.barcode),
-                    cache.orderedNutrients,
-                  ),
-                ),
-              ) ??
-              false;
+          if (!mounted) {
+            return;
+          }
+          final Product? result = await Navigator.push<Product?>(
+            context,
+            MaterialPageRoute<Product>(
+              builder: (BuildContext context) => NutritionPageLoaded(
+                Product(barcode: widget.barcode),
+                cache.orderedNutrients,
+              ),
+            ),
+          );
 
           setState(() {
-            _nutritionFactsAdded = result;
+            _nutritionFactsAdded = result != null;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildaddInputDetailsButton() {
+    if (_basicDetailsAdded) {
+      return Padding(
+          padding: _ROW_PADDING_TOP,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(
+                width: 50.0,
+                child: Icon(
+                  Icons.check,
+                  color: Colors.greenAccent,
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                      AppLocalizations.of(context).basic_details_add_success,
+                      style: Theme.of(context).textTheme.bodyText1),
+                ),
+              ),
+            ],
+          ));
+    }
+
+    return Padding(
+      padding: _ROW_PADDING_TOP,
+      child: SmoothLargeButtonWithIcon(
+        text: AppLocalizations.of(context).completed_basic_details_btn_text,
+        icon: Icons.edit,
+        onPressed: () async {
+          final Product? result = await Navigator.push<Product?>(
+            context,
+            MaterialPageRoute<Product>(
+              builder: (BuildContext context) => AddBasicDetailsPage(
+                Product(barcode: widget.barcode),
+              ),
+            ),
+          );
+          setState(() {
+            _basicDetailsAdded = result != null;
           });
         },
       ),

@@ -1,5 +1,4 @@
 {
-    "app_name": "OpenFoodFacts",
     "@Utils": {},
     "yes": "Tak",
     "@yes": {},
@@ -13,11 +12,16 @@
     "@next_label": {
         "description": "A label on a button that says 'Next', pressing the button takes the user to the next screen."
     },
+    "go_back_to_top": "Powrót do góry",
     "save": "Zapisz",
     "save_confirmation": "Na pewno chcesz zapisać?",
     "skip": "Pomiń",
     "cancel": "Anuluj",
     "@cancel": {},
+    "ignore": "Ignoruj",
+    "@ignore": {
+        "description": "'Ignore' button. Typical use case in combination with 'OK' and 'Cancel' buttons."
+    },
     "close": "Zamknij",
     "@close": {},
     "no": "Nie",
@@ -40,24 +44,63 @@
     "@label_web": {},
     "learnMore": "Dowiedz się więcej",
     "@learnMore": {},
-    "general_confirmation": "Na pewno?",
-    "incompatible": "Niekompatybilny",
-    "@incompatible": {
-        "description": "Short label for product list view: the product is incompatible with your preferences"
-    },
-    "compatible": "Kompatybilny",
-    "@compatible": {
-        "description": "Short label for product list view: the product is compatible with your preferences"
-    },
     "unknown": "Nieznany",
     "@unknown": {
         "description": "Short label for product list view: the compatibility of that product with your preferences is unknown"
+    },
+    "match_very_good": "Bardzo dobre dopasowanie",
+    "@match_very_good": {
+        "description": "Label for product page regarding product compatibility with the user preferences: very good match"
+    },
+    "match_good": "Dobre dopasowanie",
+    "@match_good": {
+        "description": "Label for product page regarding product compatibility with the user preferences: good match"
+    },
+    "match_poor": "Słabe dopasowanie",
+    "@match_poor": {
+        "description": "Label for product page regarding product compatibility with the user preferences: poor match"
+    },
+    "match_may_not": "Może nie pasować",
+    "@match_may_not": {
+        "description": "Label for product page regarding product compatibility with the user preferences: may not match"
+    },
+    "match_does_not": "Brak zgodności",
+    "@match_does_not": {
+        "description": "Label for product page regarding product compatibility with the user preferences: does not match"
+    },
+    "match_unknown": "Nie znaleziono powiązania",
+    "@match_unknown": {
+        "description": "Label for product page regarding product compatibility with the user preferences: unknown match"
+    },
+    "match_short_very_good": "Bardzo dobre dopasowanie",
+    "@match_short_very_good": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: very good match"
+    },
+    "match_short_good": "Dobre dopasowanie",
+    "@match_short_good": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: good match"
+    },
+    "match_short_poor": "Słabe dopasowanie",
+    "@match_short_poor": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: poor match"
+    },
+    "match_short_may_not": "Może nie pasować",
+    "@match_short_may_not": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: may not match"
+    },
+    "match_short_does_not": "Brak zgodności",
+    "@match_short_does_not": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: does not match"
+    },
+    "match_short_unknown": "Nie znaleziono powiązania",
+    "@match_short_unknown": {
+        "description": "Short label for product list view regarding product compatibility with the user preferences: unknown match"
     },
     "licenses": "Licences",
     "@licenses": {},
     "looking_for": "Szukam",
     "@looking_for": {
-        "description": "Looking for: ${BARCODE}"
+        "description": "Looking for: BARCODE"
     },
     "@Introduction screen": {},
     "welcomeToOpenFoodFacts": "Witamy w Open Food Facts",
@@ -98,6 +141,10 @@
     "sign_in": "Zaloguj się",
     "@sign_in": {
         "description": "Button label: For sign in"
+    },
+    "sign_in_mandatory": "Aby korzystać z tej funkcji, musisz się zalogować.",
+    "@sign_in_mandatory": {
+        "description": "Error message: for some features like product edits you need to be signed in"
     },
     "sign_out": "Wyloguj się",
     "@sign_out": {
@@ -156,7 +203,7 @@
     "sign_up_page_username_error_empty": "Wpisz nazwę użytkownika (pseudonim)",
     "sign_up_page_username_error_invalid": "Proszę wprowadzić poprawną nazwę użytkownika",
     "sign_up_page_username_description": "Nazwa użytkownika nie może zawierać spacji, dużych liter ani znaków specjalnych",
-    "sign_up_page_username_length_invalid": "Ilosć znaków w Nazwie użytkownika mysi być mniejsza niż {value}",
+    "sign_up_page_username_length_invalid": "Nazwa użytkownika nie może przekraczać {value} znaków",
     "@sign_up_page_username_length_invalid": {
         "placeholders": {
             "value": {
@@ -226,6 +273,8 @@
     },
     "support_join_slack": "Zapytaj o pomoc na naszym kanale Slack",
     "support_via_email": "Wyślij do nas maila",
+    "support_via_email_include_logs_dialog_title": "Wysłać dzienniki aplikacji?",
+    "support_via_email_include_logs_dialog_body": "Czy chcesz dołączyć logi aplikacji do wiadomości e-mail?",
     "termsOfUse": "Zasady korzystania",
     "@termsOfUse": {},
     "about_this_app": "O tej aplikacji",
@@ -245,6 +294,8 @@
     "@contribute_develop_text": {},
     "contribute_develop_text_2": "Możesz dołączyć do Open Food Facts Slack, który jest preferowanym sposobem na zadawanie pytań.",
     "@contribute_develop_text_2": {},
+    "contribute_develop_dev_mode_title": "Tryb deweloperski (DEV)?",
+    "contribute_develop_dev_mode_subtitle": "Aktywuj tryb deweloperski (DEV)",
     "contribute_donate_header": "Wesprzyj Open Food Facts",
     "@contribute_donate_header": {},
     "contribute_improve_ProductsToBeCompleted": "Produkty do uzupełnienia",
@@ -269,6 +320,12 @@
     "@contribute_translate_text": {},
     "contribute_translate_text_2": "Tłumaczenia są jednym z kluczowych zadań projektu",
     "@contribute_translate_text_2": {},
+    "contribute_share_header": "Udostępnij Open Food Facts znajomym",
+    "@contribute_share_header": {},
+    "contribute_share_content": "Korzystam z takiej aplikacji, Open Food Facts, która pozwala w spersonalizowany sposób poznać wpływ żywności na zdrowie i środowisko. Działa poprzez skanowanie kodów kreskowych na opakowaniu. Jest bezpłatna, nie wymaga rejestracji, a nawet możesz pomóc w zwiększeniu liczby znanych produktów. Oto link do pobrania jej na swój telefon: https://openfoodfacts.app",
+    "@contribute_share_content": {
+        "description": "Content that will be shared, don't forget to include the URL"
+    },
     "tap_to_answer": "Kliknij tu, żeby odpowiedzieć na pytania",
     "@tap_to_answer": {
         "description": "Button label shown on a product, clicking the button opens a card with unanswered product questions, users can answer these to contribute to Open food facts and gain rewards."
@@ -288,11 +345,12 @@
         "description": "Page title: Page where the ranking preferences can be changed"
     },
     "myPreferences_profile_title": "Profil",
-    "myPreferences_profile_subtitle": "Zmień ustawienia aplikacji i uzyskaj porady.",
+    "myPreferences_profile_subtitle": "Zarządzaj swoim kontem współtwórcy Open Food Facts.",
     "myPreferences_settings_title": "Ustawienia",
-    "myPreferences_settings_subtitle": "Tryb ciemny, motyw, ...",
+    "myPreferences_settings_subtitle": "Tryb ciemny, Analityka, ...",
     "myPreferences_food_title": "Preferencje żywieniowe",
     "myPreferences_food_subtitle": "Wybierz, które preferencje żywieniowe są dla Ciebie najważniejsze.",
+    "myPreferences_food_comment": "Wybierz, które informacje o jedzeniu są dla Ciebie najważniejsze, aby uszeregować żywność zgodnie z własnymi preferencjami, najpierw zobacz informacje, na których Ci zależy, i uzyskaj podsumowanie zgodności. Te preferencje żywieniowe pozostają na Twoim urządzeniu i nie są powiązane z Twoim kontem współtwórcy Open Food Facts, jeśli je posiadasz.",
     "confirmResetPreferences": "Zresetować preferencje żywieniowe?",
     "@confirmResetPreferences": {
         "description": "Pop up title: Reassuring if the food preferences should really be reset"
@@ -305,6 +363,10 @@
     "ranking_subtitle_match_yes": "Świetne dopasowanie dla Ciebie",
     "ranking_subtitle_match_no": "Bardzo słabe dopasowanie",
     "ranking_subtitle_match_maybe": "Nie znaleziono powiązania",
+    "refresh_with_new_preferences": "Odśwież listę według nowych preferencji",
+    "@refresh_with_new_preferences": {
+        "description": "Action button label: Refresh the list with your new preferences"
+    },
     "reloaded_with_new_preferences": "Odświeżono z nowymi preferencjami",
     "@reloaded_with_new_preferences": {
         "description": "Snackbar title: Shows that the modified settings have been applied"
@@ -370,9 +432,12 @@
     "@ingredients_photo": {
         "description": "Button label: For adding a picture of the Ingredients of a product"
     },
+    "packaging_editing_instructions": "Wymień wszystkie części opakowania oddzielone przecinkiem lub nowym wierszem, podając ich ilość (np. 1 lub 6) rodzaj (np. butelka, pudełko, puszka), materiał (np. plastik, metal, aluminium) i, jeśli to możliwe, ich rozmiar (np. 330 ml) oraz instrukcje recyklingu.\nPrzykład: 1 szklana butelka do recyklingu, 1 plastikowy korek do wyrzucenia",
+    "packaging_editing_error": "Nie udało się zapisać informacji o opakowaniu.",
+    "packaging_editing_image_error": "Nie udało się pobrać zdjęcia nowego opakowania.",
+    "packaging_editing_title": "Edytuj opakowanie",
     "nutrition": "Odżywianie",
     "@nutrition": {},
-    "nutrition_page_close_confirmation": "Czy na pewno chcesz zamknąć bez zapisywania?",
     "nutrition_facts_photo": "Zdjęcie tabeli wartości odżywczych",
     "@nutrition_facts_photo": {
         "description": "Button label: For adding a picture of the nutrition facts of a product"
@@ -393,9 +458,9 @@
     "@add_product_information_button_label": {},
     "new_product": "Nowy Produkt",
     "@new_product": {},
-    "front_packaging_photo_button_label": "Zdjęcie przodu Produktu",
+    "front_packaging_photo_button_label": "Zdjęcie produktu z przodu",
     "@front_packaging_photo_button_label": {},
-    "confirm_front_packaging_photo_button_label": "Potwierdź przesłanie przedniego zdjęcia Produktu",
+    "confirm_front_packaging_photo_button_label": "Potwierdź przesłanie zdjęcia produktu",
     "@confirm_front_packaging_photo_button_label": {
         "description": "Button clicking on which confirms the picture of the front of product that user just took."
     },
@@ -409,34 +474,21 @@
     "@front_photo_uploaded": {},
     "ingredients_photo_button_label": "Zdjęcie listy składników",
     "@ingredients_photo_button_label": {},
-    "confirm_ingredients_photo_button_label": "Potwierdź zdjęcie składników",
-    "@confirm_ingredients_photo_button_label": {
-        "description": "Button clicking on which confirms the picture of ingredients that user just took."
-    },
     "ingredients_photo_uploaded": "Przesłano zdjęcie składników",
     "@ingredients_photo_uploaded": {},
+    "nutrition_cache_loading_error": "Nie można załadować składników odżywczych z pamięci podręcznej",
     "nutritional_facts_photo_button_label": "Zdjęcie tabeli wartości odżywczych",
     "@nutritional_facts_photo_button_label": {},
-    "confirm_nutritional_facts_photo_button_label": "Potwierdź zdjęcie listy wartości odżywczych",
-    "@confirm_nutritional_facts_photo_button_label": {
-        "description": "Button clicking on which confirms the picture of nutritional facts that user just took."
-    },
+    "nutritional_facts_input_button_label": "Wprowadź wartości odżywcze",
+    "nutritional_facts_added": "Wartości odżywcze zostały dodane",
     "nutritional_facts_photo_uploaded": "Przesłano zdjęcie z listą wartości odżywczych",
     "@nutritional_facts_photo_uploaded": {},
     "recycling_photo_button_label": "Zdjęcie informacji dotyczących Recyklingu",
     "@recycling_photo_button_label": {},
-    "confirm_recycling_photo_button_label": "Potwierdź zdjęcie dotyczące Recyklingu",
-    "@confirm_recycling_photo_button_label": {
-        "description": "Button clicking on which confirms the picture of recycling information that user just took."
-    },
     "recycling_photo_uploaded": "Przesłano zdjęcie dot. Recyklingu",
     "@recycling_photo_uploaded": {},
     "other_interesting_photo_button_label": "Inne ciekawe zdjęcia",
     "@other_interesting_photo_button_label": {},
-    "confirm_other_interesting_photo_button_label": "Zatwierdź zdjęcie",
-    "@confirm_other_interesting_photo_button_label": {
-        "description": "Button clicking on which confirms a miscellaneous photo of the product."
-    },
     "other_photo_uploaded": "Inne zdjęcie przesłane",
     "@other_photo_uploaded": {},
     "retake_photo_button_label": "Odzyskaj",
@@ -572,18 +624,6 @@
         "description": "Clears a product list"
     },
     "really_clear": "Czy na pewno chcesz usunąć tę listę?",
-    "product_compatibility_unknown": "Kompatybilność nieznana",
-    "@product_compatibility_unknown": {
-        "description": "Product compatibility summary title"
-    },
-    "product_compatibility_incompatible": "Brak zgodności",
-    "@product_compatibility_incompatible": {
-        "description": "Product compatibility summary title"
-    },
-    "product_compatibility_good": "Dobre dopasowanie",
-    "@product_compatibility_good": {
-        "description": "Product compatibility summary title"
-    },
     "@Plural": {},
     "pct_match": "{percent}% dopasowania",
     "@pct_match": {
@@ -592,42 +632,42 @@
             "percent": {}
         }
     },
-    "plural_ago_days": "{count,plural, one {} =1{one day ago} other{{count} days ago}}",
+    "plural_ago_days": "{count,plural, one {} =1{jeden dzień temu} other{{count} dni temu}}",
     "@plural_ago_days": {
         "description": "Cached results from: x days ago",
         "placeholders": {
             "count": {}
         }
     },
-    "plural_ago_hours": "{count,plural, one {} =1{one hour ago} other{{count} hours ago}}",
+    "plural_ago_hours": "{count,plural, one {} =1{godzinę temu} =2{2 godziny temu} =3{3 godziny temu} =4{4 godziny temu} other{{count} godzin temu}}",
     "@plural_ago_hours": {
         "description": "Cached results from: x hours ago",
         "placeholders": {
             "count": {}
         }
     },
-    "plural_ago_minutes": "{count,plural, one {} =0{less than a minute ago} =1{one minute ago} other{{count} minutes ago}}",
+    "plural_ago_minutes": "{count,plural, one {} =0{mniej niż minutę temu} =1{minutę temu} =2{2 minuty temu} =3{3 minuty temu} =4{4 minuty temu} other{{count} minut temu}}",
     "@plural_ago_minutes": {
         "description": "Cached results from: x minutes ago",
         "placeholders": {
             "count": {}
         }
     },
-    "plural_ago_months": "{count,plural, one {} =1{one month ago} other{{count} months ago}}",
+    "plural_ago_months": "{count,plural, one {} =1{miesiąc temu} =2{2 miesiące temu} =3{3 miesiące temu} =4{4 miesiące temu} other{{count} miesięcy temu}}",
     "@plural_ago_months": {
         "description": "Cached results from: x months ago",
         "placeholders": {
             "count": {}
         }
     },
-    "plural_ago_weeks": "{count,plural, one {} =1{one week ago} other{{count} weeks ago}}",
+    "plural_ago_weeks": "{count,plural, one {} =1{tydzień temu} =2{2 tygodnie temu} =3{3 tygodnie temu} =4{4 tygodnie temu} other{{count} tygodni temu}}",
     "@plural_ago_weeks": {
         "description": "Cached results from: x weeks ago",
         "placeholders": {
             "count": {}
         }
     },
-    "plural_compare_x_products": "{count,plural, other{Porównaj produkty: {count}}",
+    "plural_compare_x_products": "{count,plural, =1{Porównaj jeden Produkt} other{Porównaj {count} Produkty}",
     "@plural_compare_x_products": {
         "description": "Button label",
         "placeholders": {
@@ -641,30 +681,98 @@
     "retry_button_label": "Ponów próbę",
     "connect_with_us": "Połącz się z nami",
     "instagram": "Instagram",
+    "instagram_link": "https://instagram.com/open.food.facts",
     "twitter": "Twitter",
+    "twitter_link": "https://www.twitter.com/openfoodfacts",
     "blog": "Blog",
     "faq": "Najczęściej zadawane pytania (FAQ)",
     "discover": "Odkryj",
     "how_to_contribute": "Jak mogę pomóc",
-    "main_app_color": "Motyw",
-    "@main_app_color": {
-        "description": "Heading for the section to pick the main app color"
-    },
-    "hint_knowledge_panel_message": "Your can tap on any part of the card to get more details about what you see. Try it now!",
+    "hint_knowledge_panel_message": "Możesz dotknąć dowolnej części karty, aby uzyskać więcej informacji na temat tego, co widzisz. Spróbuj teraz!",
     "@hint_knowledge_panel_message": {
         "description": "Hint popup indicating the card is clickable during onboarding"
     },
-    "consent_analytics_title": "Send anonymous analytics",
+    "consent_analytics_title": "Wysyłanie anonimowych danych analitycznych",
     "@consent_analytics_title": {
         "description": "Title for the consent analytics UI Page"
     },
-    "consent_analytics_body1": "Help the Open Food Facts volunteers to improve the app. You decide whether to submit anonymous analytics.",
+    "consent_analytics_body1": "Pomóż wolontariuszom Open Food Facts ulepszyć aplikację. Zdecydujesz, czy chcesz przesyłać anonimowe dane analityczne.",
     "@conset_analytics_body1": {
         "description": "first paragraph for the consent analytics UI Page"
     },
-    "consent_analytics_body2": "If you change your mind, this option can be enabled and disabled at any time from the settings.",
+    "consent_analytics_body2": "Jeśli zmienisz zdanie, tę opcję możesz włączyć i wyłączyć w dowolnym momencie w ustawieniach.",
     "@consent_analytics_body2": {
         "description": "second paragraph for the consent analytics UI Page"
+    },
+    "contact_form_body_android": "OS: Android (SDK Int: {sdkInt} / Release: {release})\nModel: {model}\nProduct: {product}\nDevice: {device}\nBrand:{brand}",
+    "@contact_form_body_android": {
+        "description": "Contact form content for Android devices",
+        "placeholders": {
+            "sdkInt": {
+                "type": "int?",
+                "description": "SDK Int = Version of Android SDK"
+            },
+            "release": {
+                "type": "String?",
+                "description": "Name of the release"
+            },
+            "model": {
+                "type": "String?",
+                "description": "Model of the device"
+            },
+            "product": {
+                "type": "String?",
+                "description": "Name of the device (depending on device, it can be its codename or its real name)"
+            },
+            "device": {
+                "type": "String?",
+                "description": "Name of the device (depending on device, it can be its codename or its real name)"
+            },
+            "brand": {
+                "type": "String?",
+                "description": "Brand of the device (eg: Samsung)"
+            }
+        }
+    },
+    "contact_form_body_ios": "OS: iOS ({version})\nModel: {model}\nLocalized model: {localizedModel}",
+    "@contact_form_body_ios": {
+        "description": "Contact form content for iOS devices",
+        "placeholders": {
+            "version": {
+                "type": "String?",
+                "description": "Version of IOS (eg : 15)"
+            },
+            "model": {
+                "type": "String?",
+                "description": "Name of the iPhone"
+            },
+            "localizedModel": {
+                "type": "String?",
+                "description": "Localized name of the iPhone"
+            }
+        }
+    },
+    "contact_form_body": "{osContent}\nWersja aplikacji:{appVersion}\nNumer kompilacji aplikacji:{appBuildNumber}\nNazwa pakietu aplikacji:{appPackageName}",
+    "@contact_form_body": {
+        "description": "Contact form content",
+        "placeholders": {
+            "osContent": {
+                "type": "String",
+                "description": "Content from contact_form_body_ios key (on iOS) or contact_form_body_android (on Android)"
+            },
+            "appVersion": {
+                "type": "String",
+                "description": "Version name of the app (eg: 1.0.0)"
+            },
+            "appBuildNumber": {
+                "type": "String",
+                "description": "Version code of the app (a number)"
+            },
+            "appPackageName": {
+                "type": "String",
+                "description": "Name/package of the app"
+            }
+        }
     },
     "authorize_button_label": "Autoryzuj",
     "@authorize": {
@@ -674,7 +782,7 @@
     "@refuse": {
         "description": "Button to decline the request of sending the anonymous analytics"
     },
-    "knowledge_panel_text_source": "Go further on {source_name}",
+    "knowledge_panel_text_source": "Przejdź dalej na {source_name}",
     "@knowledge_panel_text_source": {
         "description": "Source field within a text knowledge panel.",
         "placeholders": {
@@ -683,9 +791,21 @@
             }
         }
     },
+    "onboarding_reinventing_text1": "W 2012 roku\nstworzyliśmy aplikację\ndo wspólnego skanowania",
+    "@onboarding_reinventing_text1": {
+        "description": "Onboarding / Reinventing page: text 1/2. If possible, balanced on 3 lines."
+    },
+    "onboarding_reinventing_text2": "Po 10. latach działania\npostanowiliśmy zaprojektować\naplikację od zera!",
+    "@onboarding_reinventing_text2": {
+        "description": "Onboarding / Reinventing page: text 2/2. If possible, balanced on 3 lines."
+    },
     "onboarding_welcome_loading_dialog_title": "Ładowanie pierwszego przykładowego produktu",
     "@onboarding_welcome_loading_dialog_title": {
         "description": "Title for the onboarding loading dialog"
+    },
+    "onboarding_welcome_loading_error": "Wygląda na to, że nie ma przykładowego produktu w Twoim języku",
+    "@onboarding_welcome_loading_error": {
+        "description": "Seems like there is no example product in your language"
     },
     "product_list_your_ranking": "Twój ranking",
     "@product_list_your_ranking": {
@@ -703,13 +823,19 @@
     "@product_list_empty_message": {
         "description": "When the history list is empty, body of the message explaining to start scanning"
     },
-    "product_list_reloading_in_progress": "Odświeżanie produktów w Twojej historii",
-    "@product_list_reloading_in_progress": {
-        "description": "Message to show while loading previous scanned items"
+    "product_list_reloading_in_progress_multiple": "Odświeżanie {count,plural, one {} =0{produktu} =1{produktu} other{produktów}} w historii",
+    "@product_list_reloading_in_progress_multiple": {
+        "description": "Message to show while loading previous scanned items",
+        "placeholders": {
+            "count": {}
+        }
     },
-    "product_list_reloading_success": "Odświeżanie produktu zakończone",
-    "@product_list_reloading_success": {
-        "description": "Message to show once previous scanned items are loaded"
+    "product_list_reloading_success_multiple": "{count,plural, one {} =0{Product} =1{Product} other{Products}} refresh complete",
+    "@product_list_reloading_success_multiple": {
+        "description": "Message to show once previous scanned items are loaded",
+        "placeholders": {
+            "count": {}
+        }
     },
     "loading_dialog_default_title": "Pobieranie danych",
     "@loading_dialog_default_title": {
@@ -722,6 +848,33 @@
     "account_delete": "Usuń konto",
     "@account_delete": {
         "description": "Delete account button (user profile)"
+    },
+    "user_profile": "Konto",
+    "@user_profile": {
+        "description": "User account (if connected)"
+    },
+    "user_profile_title_guest": "Witaj!",
+    "@user_profile_title_guest": {
+        "description": "When the user is not connected"
+    },
+    "user_profile_subtitle_guest": "Zaloguj się lub zarejestruj, aby dołączyć do społeczności Open Food Facts",
+    "user_profile_title_id_email": "Logowanie do Open Food Facts: {email}",
+    "@user_profile_title_id_email": {
+        "description": "User login (when it's an email)",
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "user_profile_title_id_default": "Witaj {id}!",
+    "@user_profile_title_id_default": {
+        "description": "User login (when it's an id)",
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
     },
     "email_subject_account_deletion": "Usuń konto",
     "@email_subject_account_deletion": {
@@ -736,11 +889,55 @@
             }
         }
     },
+    "settings_app_app": "Aplikacja",
+    "settings_app_data": "Prywatność i monitorowanie",
+    "settings_app_camera": "Aparat",
+    "@camera_settings_title": {
+        "description": "Name of the camera section in the settings"
+    },
+    "camera_high_resolution_preset_toggle_title": "Tryb wysokiej wydajności",
+    "@camera_high_resolution_preset_toggle_title": {
+        "description": "Title for the Camera high resolution toggle"
+    },
+    "camera_high_resolution_preset_toggle_subtitle": "Po włączeniu jakość dekodowania kodów kreskowych powinna być lepsza, ale może mieć wpływ na wydajność i żywotność baterii. Wymaga ponownego uruchomienia aplikacji.",
+    "@camera_high_resolution_preset_toggle_subtitle": {
+        "description": "SubTitle for the Camera high resolution toggle"
+    },
+    "camera_focus_point_algorithm_title": "Tryb ustawiania ostrości",
+    "@camera_focus_point_algorithm_title": {
+        "description": "Title for the Camera focus mode (Android only)"
+    },
+    "camera_focus_point_algorithm_subtitle": "Bieżący tryb: {mode}\n{reason}",
+    "@camera_focus_point_algorithm_subtitle": {
+        "description": "SubTitle for the Camera focus mode (Android only)",
+        "placeholders": {
+            "mode": {
+                "type": "String"
+            },
+            "reason": {
+                "type": "String"
+            }
+        }
+    },
+    "camera_focus_point_algorithm_value_auto_label": "Automatycznie",
+    "camera_focus_point_algorithm_value_auto_description": "Niech system automatycznie wybiera między trybem szybkim i awaryjnym.",
+    "camera_focus_point_algorithm_value_new_algorithm_label": "Tryb szybki",
+    "camera_focus_point_algorithm_value_new_algorithm_description": "Tryb zalecany dla najnowszych urządzeń.",
+    "camera_focus_point_algorithm_value_old_algorithm_label": "Tryb awaryjny",
+    "camera_focus_point_algorithm_value_old_algorithm_description": "Jeśli tryb szybki nie działa, powinno to rozwiązać problemy z ustawieniem ostrości.",
+    "camera_play_sound_title": "Odtwórz dźwięk po zeskanowaniu",
+    "@camera_play_sound_title": {
+        "description": "Title for the Camera play sound toggle"
+    },
+    "camera_play_sound_subtitle": "Po każdym udanym skanowaniu wyda sygnał dźwiękowy",
+    "@camera_play_sound_subtitle": {
+        "description": "SubTitle for the Camera play sound toggle"
+    },
     "crash_reporting_toggle_title": "Raportowanie błędów",
     "@crash_reporting_toggle_title": {
         "description": "Title for the Crash reporting toggle"
     },
-    "crash_reporting_toggle_subtitle": "When enabled, crash reports are automatically submitted to Open Food Facts' error tracking system, so that bugs can be fixed and thus improve the app.",
+    "crash_reporting_toggle_subtitle": "Po włączeniu raporty o awariach są automatycznie przesyłane do systemu śledzenia błędów Open Food Facts, dzięki czemu będzie można naprawić błędy, a tym samym ulepszyć aplikację.",
     "@crash_reporting_toggle_subtitle": {
         "description": "SubTitle for the Crash reporting toggle"
     },
@@ -760,8 +957,8 @@
     "@permission_photo_error": {
         "description": "When the camera/photo permission failed to be acquired (!= denied)"
     },
-    "permission_photo_denied_title": "Allow camera use to scan barcodes",
-    "permission_photo_denied_message": "For an enhanced experience, please allow {appName} to access your camera. You will be able to directly scan barcodes.",
+    "permission_photo_denied_title": "Zezwalaj na używanie aparatu do skanowania kodów kreskowych",
+    "permission_photo_denied_message": "Dla lepszego doświadczenia, proszę zezwolić {appName} na dostęp do kamery. Będziesz mógł bezpośrednio skanować kody kreskowe.",
     "@permission_photo_denied_message": {
         "description": "When the camera/photo permission is denied by user",
         "placeholders": {
@@ -770,15 +967,15 @@
             }
         }
     },
-    "permission_photo_denied_button": "Allow",
+    "permission_photo_denied_button": "Zezwól",
     "@permission_photo_denied_button": {
         "description": "When the camera/photo permission is denied by user"
     },
-    "permission_photo_denied_dialog_settings_title": "Permission denied",
-    "permission_photo_denied_dialog_settings_message": "As you've previously denied the camera permission, you must allow it manually from the Settings.",
+    "permission_photo_denied_dialog_settings_title": "Odmowa dostępu",
+    "permission_photo_denied_dialog_settings_message": "Ponieważ poprzednio odmówiono dostępu do aparatu, musisz zezwolić na to ręcznie w Ustawieniach.",
     "permission_photo_denied_dialog_settings_button_open": "Ustawienia",
     "permission_photo_denied_dialog_settings_button_cancel": "Anuluj",
-    "permission_photo_denied": "No camera access granted",
+    "permission_photo_denied": "Nie przyznano dostępu do aparatu",
     "@permission_photo_denied": {
         "description": "When the camera/photo permission is denied by user"
     },
@@ -790,11 +987,11 @@
     "@edit_product_form_item_barcode": {
         "description": "Product edition - Barcode"
     },
-    "edit_product_form_item_details_title": "Basic details",
+    "edit_product_form_item_details_title": "Informacje podstawowe",
     "@edit_product_form_item_details_title": {
         "description": "Product edition - Basic Details - Title"
     },
-    "edit_product_form_item_details_subtitle": "Product name, brand, quantity",
+    "edit_product_form_item_details_subtitle": "Nazwa produktu, marka, ilość",
     "@edit_product_form_item_details_subtitle": {
         "description": "Product edition - Basic Details - Title"
     },
@@ -802,19 +999,92 @@
     "@edit_product_form_item_photos_title": {
         "description": "Product edition - Photos - Title"
     },
-    "edit_product_form_item_photos_subtitle": "Add or refresh photos",
+    "edit_product_form_item_photos_subtitle": "Dodaj lub odśwież zdjęcia",
     "@edit_product_form_item_photos_subtitle": {
         "description": "Product edition - Photos - SubTitle"
     },
-    "edit_product_form_item_labels_title": "Labels & Certifications",
+    "edit_product_form_item_labels_title": "Etykiety i certyfikaty",
     "@edit_product_form_item_labels_title": {
         "description": "Product edition - Labels - Title"
     },
-    "edit_product_form_item_labels_subtitle": "Environmental, Quality labels, ...",
+    "edit_product_form_item_labels_subtitle": "Środowiskowe, jakościowe, ...",
     "@edit_product_form_item_labels_subtitle": {
         "description": "Product edition - Labels - SubTitle"
     },
-    "edit_product_form_item_ingredients_title": "Ingredients & Origins",
+    "edit_product_form_item_labels_hint": "etykieta",
+    "@edit_product_form_item_labels_hint": {
+        "description": "Product edition - Labels - input textfield hint"
+    },
+    "edit_product_form_item_stores_title": "Sklepy",
+    "@edit_product_form_item_stores_title": {
+        "description": "Product edition - Stores - Title"
+    },
+    "edit_product_form_item_stores_hint": "stan",
+    "@edit_product_form_item_stores_hint": {
+        "description": "Product edition - Stores - input textfield hint"
+    },
+    "edit_product_form_item_origins_title": "Pochodzenie",
+    "@edit_product_form_item_origins_title": {
+        "description": "Product edition - Origins - Title"
+    },
+    "edit_product_form_item_origins_hint": "Hiszpania",
+    "@edit_product_form_item_origins_hint": {
+        "description": "Product edition - Origins - input textfield hint"
+    },
+    "edit_product_form_item_origins_explainer_1": "Dodaj informacje o pochodzeniu, które można znaleźć na opakowaniu. Nie musisz się martwić o pochodzenie wskazane bezpośrednio na liście składników.",
+    "@edit_product_form_item_origins_explainer_1": {
+        "description": "Product edition - Origins - input explainer, part 1"
+    },
+    "edit_product_form_item_origins_explainer_2": "Przykłady: wołowina z Argentyny, soja nie pochodzi z Unii Europejskiej",
+    "@edit_product_form_item_origins_explainer_2": {
+        "description": "Product edition - Origins - input explainer, part 2"
+    },
+    "edit_product_form_item_countries_title": "Kraj",
+    "@edit_product_form_item_countries_title": {
+        "description": "Product edition - Countries - Title"
+    },
+    "edit_product_form_item_countries_hint": "Hiszpania",
+    "@edit_product_form_item_countries_hint": {
+        "description": "Product edition - Countries - input textfield hint"
+    },
+    "edit_product_form_item_countries_explanations": "Kraje, w których produkt jest powszechnie dostępny (nie wliczając sklepów specjalizujących się w produktach zagranicznych).",
+    "@edit_product_form_item_countries_explanations": {
+        "description": "Product edition - Countries - explanations"
+    },
+    "edit_product_form_item_emb_codes_title": "Kody identyfikujące",
+    "@edit_product_form_item_emb_codes_title": {
+        "description": "Product edition - Traceability codes - Title"
+    },
+    "edit_product_form_item_emb_codes_hint": "EMB 53062, FR 62.448.034 CE, 84 R 20, 33 RECOLTANT 522",
+    "@edit_product_form_item_emb_codes_hint": {
+        "description": "Product edition - Traceability Codes - input textfield hint"
+    },
+    "edit_product_form_item_emb_codes_explanations": "W Europie kod w elipsie z inicjałami 2 krajów, po których następuje liczba i CE.\nPrzykłady: EMB 53062, FR 62.448.034 CE, 84 R 20, 33 RECOLLTANT 522",
+    "@edit_product_form_item_emb_codes_examples": {
+        "description": "Product edition - EMB Codes - explanations"
+    },
+    "edit_product_form_item_categories_title": "Kategorie",
+    "@edit_product_form_item_categories_title": {
+        "description": "Product edition - Categories - Title"
+    },
+    "edit_product_form_item_categories_hint": "kategoria",
+    "@edit_product_form_item_categories_hint": {
+        "description": "Product edition - Categories - input textfield hint"
+    },
+    "edit_product_form_item_categories_explainer_1": "Wskaż tylko najbardziej szczegółową kategorię. Kategorie nadrzędne zostaną automatycznie dodane.",
+    "@edit_product_form_item_categories_explainer_1": {
+        "description": "Product edition - Categories - input explainer, part 1"
+    },
+    "edit_product_form_item_categories_explainer_2": "Jeśli kategoria nie jest dostępna w autouzupełnianiu, możesz ją dodać, pomoże nam to ulepszyć Open Food Facts w Twoim kraju.",
+    "@edit_product_form_item_categories_explainer_2": {
+        "description": "Product edition - Categories - input explainer, part 2"
+    },
+    "edit_product_form_item_categories_explainer_3": "Przykłady: sardynki w oliwie z oliwek, sok pomarańczowy z koncentratu",
+    "@edit_product_form_item_categories_explainer_3": {
+        "description": "Product edition - Categories - input explainer, part 3"
+    },
+    "edit_product_form_item_exit_confirmation": "Czy chcesz zapisać zmiany przed opuszczeniem tej strony?",
+    "edit_product_form_item_ingredients_title": "Składniki i pochodzenie",
     "@edit_product_form_item_ingredients_title": {
         "description": "Product edition - Ingredients - Title"
     },
@@ -826,7 +1096,7 @@
     "@edit_product_form_item_nutrition_facts_title": {
         "description": "Product edition - Nutrition facts - Title"
     },
-    "edit_product_form_item_nutrition_facts_subtitle": "Nutrition, alcohol content…",
+    "edit_product_form_item_nutrition_facts_subtitle": "Wartości odżywcze, zaw. alkoholu…",
     "@edit_product_form_item_nutrition_facts_subtitle": {
         "description": "Product edition - Nutrition facts - SubTitle"
     },
@@ -841,23 +1111,31 @@
     "@edit_ingredients_extrait_ingredients_btn_text": {
         "description": "Ingredients edition - Extract ingredients"
     },
-    "edit_ingredients_refresh_photo_btn_text": "Refresh photo",
+    "edit_ingredients_refresh_photo_btn_text": "Odśwież zdjęcie",
     "@edit_ingredients_refresh_photo_btn_text": {
         "description": "Ingredients edition - Refresh photo"
     },
-    "user_list_dialog_new_title": "New list of products",
+    "edit_packaging_extract_btn_text": "Rozpoznaj opakowanie",
+    "@edit_packaging_extract_btn_text": {
+        "description": "Packaging edition - OCR-Extract packaging"
+    },
+    "edit_packaging_refresh_photo_btn_text": "Odśwież zdjęcie",
+    "@edit_packaging_refresh_photo_btn_text": {
+        "description": "Packaging edition - Refresh photo"
+    },
+    "user_list_dialog_new_title": "Nowa lista produktów",
     "@user_list_dialog_new_title": {
         "description": "Title of the 'new user list' dialog"
     },
-    "user_list_dialog_rename_title": "Rename list",
+    "user_list_dialog_rename_title": "Zmień nazwę listy",
     "@user_list_dialog_rename_title": {
         "description": "Title of the 'rename user list' dialog"
     },
-    "user_list_subtitle_product": "Lists",
+    "user_list_subtitle_product": "Listy",
     "@user_list_subtitle_product": {
         "description": "Subtitle of a paragraph about user lists in a product context"
     },
-    "user_list_button_new": "New list",
+    "user_list_button_new": "Nowa lista",
     "@user_list_button_new": {
         "description": "Short label of a 'new list' button"
     },
@@ -869,41 +1147,447 @@
     "@user_list_popup_clear": {
         "description": "Short label of a 'clear list' popup"
     },
-    "user_list_popup_rename": "Rename",
+    "user_list_popup_rename": "Zmień nazwę",
     "@user_list_popup_rename": {
         "description": "Short label of a 'rename list' popup"
     },
-    "user_list_name_hint": "My list",
+    "user_list_name_hint": "Moja lista",
     "@user_list_name_hint": {
         "description": "Hint of a user list name text-field in a 'user list' dialog"
     },
-    "user_list_name_error_empty": "The name cannot be empty",
+    "user_list_name_error_empty": "Nazwa jest obowiązkowe",
     "@user_list_name_error_empty": {
         "description": "Validation error about the name that cannot be empty"
     },
-    "user_list_name_error_already": "That name is already used",
+    "user_list_name_error_already": "Ta nazwa jest już używana",
     "@user_list_name_error_already": {
         "description": "Validation error about the name that is already used for another list"
     },
-    "user_list_name_error_same": "That is the same name",
+    "user_list_name_error_same": "Ta lista już się tak nazywa",
     "@user_list_name_error_same": {
         "description": "Validation error about the renamed name that is the same as the initial list name"
     },
-    "basic_details": "Basic Details",
-    "product_name": "Product Name",
-    "add_basic_details_product_name_error": "Please enter the product name",
-    "brand_name": "Brand name",
-    "add_basic_details_brand_name_error": "Please enter the brand name",
-    "weight_gram": "Weight in gram",
-    "add_basic_details_weight_gram_error": "Please enter the weight",
+    "try_again": "Spróbuj ponownie",
+    "@try_again": {
+        "description": "Label for buttons that try to repeat a failed action"
+    },
+    "there_was_an_error": "Wystąpił błąd",
+    "@there_was_an_error": {
+        "description": "Label that presents a error"
+    },
+    "category_picker_no_category_found_message": "Nie znaleziono kategorii dla {items}",
+    "@category_picker_no_category_found_message": {
+        "description": "Label when no category is available",
+        "placeholders": {
+            "items": {
+                "type": "String"
+            }
+        }
+    },
+    "camera_enable_flash": "Włącz lampę błyskową",
+    "@camera_enable_flash": {
+        "description": "Enable flash (tooltip)"
+    },
+    "camera_disable_flash": "Wyłącz lampę błyskową",
+    "@camera_disable_flash": {
+        "description": "Disable flash (tooltip)"
+    },
+    "category_picker_no_category_found_button": "Wstecz",
+    "@category_picker_no_category_found_button": {
+        "description": "Button label when no category is available"
+    },
+    "dev_preferences_screen_title": "Tryb deweloperski (DEV)",
+    "@dev_preferences_screen_title": {
+        "description": "User dev preferences - Title"
+    },
+    "dev_preferences_disable_mode": "Usuń tryb deweloperski",
+    "@dev_preferences_disable_mode": {
+        "description": "User dev preferences - Remove dev mode label"
+    },
+    "dev_preferences_reset_onboarding_title": "Restart onboarding",
+    "@dev_preferences_reset_onboarding_title": {
+        "description": "User dev preferences - Reset onboarding - Title"
+    },
+    "dev_preferences_reset_onboarding_subtitle": "You then have to restart Flutter to see it again.",
+    "@dev_preferences_reset_onboarding_subtitle": {
+        "description": "User dev preferences - Reset onboarding - Subtitle"
+    },
+    "dev_preferences_environment_switch_title": "Switch between openfoodfacts.org (PROD) and test env",
+    "@dev_preferences_environment_switch_title": {
+        "description": "User dev preferences - Environment (prod/test) switcher - Title"
+    },
+    "dev_preferences_environment_switch_subtitle": "Current query type is {query}",
+    "@dev_preferences_environment_switch_subtitle": {
+        "description": "User dev preferences - Environment (prod/test) switcher - Subtitle",
+        "placeholders": {
+            "query": {
+                "type": "String"
+            }
+        }
+    },
+    "dev_preferences_test_environment_title": "Parametry środowiska testowego",
+    "@dev_preferences_test_environment_title": {
+        "description": "User dev preferences - Info about test environment - Title"
+    },
+    "dev_preferences_test_environment_subtitle": "Podstawowy adres URL dla bieżącego środowiska testowego: {url}",
+    "@dev_preferences_test_environment_subtitle": {
+        "description": "User dev preferences - Info about test environment - Value",
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "dev_preferences_test_environment_dialog_title": "Host środowiska testowego:",
+    "@dev_preferences_test_environment_dialog_title": {
+        "description": "User dev preferences - Info about test environment - Dialog title"
+    },
+    "dev_preferences_ml_kit_title": "Użyj zestawu ML",
+    "@dev_preferences_ml_kit_title": {
+        "description": "User dev preferences - Enable ML Kit - Title"
+    },
+    "dev_preferences_ml_kit_subtitle": "musisz ponownie uruchomić tę aplikację",
+    "@dev_preferences_ml_kit_subtitle": {
+        "description": "User dev preferences - Enable ML Kit - Subtitle"
+    },
+    "dev_preferences_product_additional_features_title": "Dodatkowy przycisk na stronie produktu",
+    "@dev_preferences_product_additional_features_title": {
+        "description": "User dev preferences - Additional buttons on product page - Title"
+    },
+    "dev_preferences_edit_ingredients_title": "Edytuj składniki za pomocą przycisku panelu wiedzy",
+    "@dev_preferences_edit_ingredients_title": {
+        "description": "User dev preferences - Additional buttons on product page - Subtitle"
+    },
+    "dev_preferences_export_history_title": "Eksportuj historię",
+    "@dev_preferences_export_history_title": {
+        "description": "User dev preferences - Export history - Title"
+    },
+    "dev_preferences_export_history_progress_error": "wyjątek",
+    "@dev_preferences_export_history_progress_error": {
+        "description": "User dev preferences - Export history - Item - Error"
+    },
+    "dev_preferences_export_history_progress_found": "znaleziono produkt",
+    "@dev_preferences_export_history_progress_found": {
+        "description": "User dev preferences - Export history - Item - Found"
+    },
+    "dev_preferences_export_history_progress_not_found": "produkt NIE został znaleziony",
+    "@dev_preferences_export_history_progress_not_found": {
+        "description": "User dev preferences - Export history - Item - Not found"
+    },
+    "dev_preferences_export_history_dialog_title": "Eksportuj historię",
+    "@dev_preferences_export_history_dialog_title": {
+        "description": "User dev preferences - Export history - Dialog title"
+    },
+    "dev_preferences_button_positive": "Ok",
+    "@dev_preferences_button_positive": {
+        "description": "User dev preferences - Positive button label"
+    },
+    "dev_preferences_button_negative": "Anuluj",
+    "@dev_preferences_button_negative": {
+        "description": "User dev preferences - Negative button label"
+    },
+    "dev_preferences_migration_title": "Migracja danych z V1",
+    "dev_preferences_migration_subtitle": "Status: {status}",
+    "@dev_preferences_migration_subtitle": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    },
+    "dev_preferences_migration_status_already_done": "sukces lub nowa instalacja",
+    "dev_preferences_migration_status_success": "zakończono pomyślnie",
+    "dev_preferences_migration_status_error": "błąd",
+    "dev_preferences_migration_status_in_progress": "w toku",
+    "dev_preferences_migration_status_required": "wymagane (kliknij, aby rozpocząć)",
+    "dev_preferences_migration_status_not_started": "nieznany",
+    "dev_preferences_import_history_title": "Importuj historię",
+    "@dev_preferences_import_history_title": {
+        "description": "User dev preferences - Import history - Title"
+    },
+    "dev_preferences_import_history_subtitle": "Will clear history and put 3 products in there",
+    "@dev_preferences_import_history_subtitle": {
+        "description": "User dev preferences - Import history - Subtitle"
+    },
+    "dev_preferences_import_history_result_success": "Gotowe",
+    "@dev_preferences_import_history_result_success": {
+        "description": "User dev preferences - Import history - Result successful"
+    },
+    "dev_mode_scan_mode_title": "Scan Mode",
+    "@dev_mode_scan_mode_title": {
+        "description": "User dev preferences - Scan mode - Title"
+    },
+    "dev_mode_scan_mode_subtitle": "Bieżący tryb skanowania to: \"{mode}\"",
+    "@dev_mode_scan_mode_subtitle": {
+        "description": "User dev preferences - Scan mode - Subtitle",
+        "placeholders": {
+            "mode": {
+                "type": "String"
+            }
+        }
+    },
+    "dev_mode_scan_mode_dialog_title": "Scan Mode",
+    "@dev_mode_scan_mode_dialog_title": {
+        "description": "User dev preferences - Scan mode - Dialog Title"
+    },
+    "dev_mode_hide_ecoscore_title": "Wyklucz EcoScore",
+    "@dev_mode_hide_ecoscore_title": {
+        "description": "User dev preferences - Disable Ecoscore - Title"
+    },
+    "dev_mode_scan_camera_only": "Only camera stream, no scanning",
+    "@dev_mode_scan_camera_only": {
+        "description": "Scan mode - Camera only"
+    },
+    "dev_mode_scan_preprocess_full_image": "Camera stream and full image preprocessing, no scanning",
+    "@dev_mode_scan_preprocess_full_image": {
+        "description": "Scan mode - Preprocess full image"
+    },
+    "dev_mode_scan_preprocess_half_image": "Camera stream and half image preprocessing, no scanning",
+    "@dev_mode_scan_preprocess_half_image": {
+        "description": "Scan mode - Preprocess half image"
+    },
+    "dev_mode_scan_scan_full_image": "Full image scanning",
+    "@dev_mode_scan_scan_full_image": {
+        "description": "Scan mode - Scan full image"
+    },
+    "dev_mode_scan_scan_half_image": "Half image scanning",
+    "@dev_mode_scan_scan_half_image": {
+        "description": "Scan mode - Scan half image"
+    },
+    "product_search_no_more_results": "Pobrałeś wszystkie {totalSize} produkty.",
+    "@product_search_no_more_results": {
+        "description": "Product search list - No more results available",
+        "placeholders": {
+            "totalSize": {
+                "type": "int"
+            }
+        }
+    },
+    "product_search_button_download_more": "Download {count} more products\nAlready downloaded {downloaded} out of {totalSize}.",
+    "@product_search_button_download_more": {
+        "description": "Product search list - Button to download more results",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "downloaded": {
+                "type": "int"
+            },
+            "totalSize": {
+                "type": "int"
+            }
+        }
+    },
+    "user_search_contributor_title": "Produkty, które dodałem",
+    "@user_search_contributor_title": {
+        "description": "User search (contributor): list tile title"
+    },
+    "user_search_informer_title": "Produkty, które edytowałem",
+    "@user_search_informer_title": {
+        "description": "User search (informer): list tile title"
+    },
+    "user_search_photographer_title": "Produkty, które sfotografowałem",
+    "@user_search_photographer_title": {
+        "description": "User search (photographer): list tile title"
+    },
+    "user_search_to_be_completed_title": "Moje produkty do uzupełnienia",
+    "@user_search_to_be_completed_title": {
+        "description": "User search (to be completed): list tile title"
+    },
+    "all_search_to_be_completed_title": "Wszystkie produkty do uzupełnienia",
+    "@all_search_to_be_completed_title": {
+        "description": "All products to be completed: list tile title"
+    },
+    "edit_product_action_retake_picture": "Retake photo",
+    "@edit_product_action_retake_picture": {
+        "description": "Product edition - FAB actions - retake a picture"
+    },
+    "edit_product_action_take_picture": "Take photo",
+    "@edit_product_action_take_picture": {
+        "description": "Product edition - FAB actions - take a picture"
+    },
+    "edit_product_action_confirm": "Potwierdź",
+    "@edit_product_action_confirm": {
+        "description": "Product edition - FAB actions - confirm"
+    },
+    "signup_page_terms_of_use_line1": "I agree to the Open Food Facts ",
+    "@signup_page_terms_of_use_line1": {
+        "description": "User consent for terms of use (line 1)"
+    },
+    "signup_page_terms_of_use_line2": "warunkami użytkowania i wkładu w Open Food Facts",
+    "@signup_page_terms_of_use_line2": {
+        "description": "User consent for terms of use (line 2)"
+    },
+    "analytics_consent_image_semantic_label": "Analytics icon",
+    "@analytics_consent_image_semantic_label": {
+        "description": "Consent Analytics icon semantics label"
+    },
+    "knowledge_panel_page_loading_error": "Błąd krytyczny: {error}",
+    "@knowledge_panel_page_loading_error": {
+        "description": "Knowledge panel page template - Error while loading future",
+        "placeholders": {
+            "error": {
+                "type": "Object?"
+            }
+        }
+    },
+    "preferences_page_loading_error": "Błąd krytyczny: {error}",
+    "@preferences_page_loading_error": {
+        "description": "Preferences page - Error while loading future",
+        "placeholders": {
+            "error": {
+                "type": "Object?"
+            }
+        }
+    },
+    "summary_card_button_add_basic_details": "Uzupełnij podstawowe informacje",
+    "@summary_card_button_add_basic_details": {
+        "description": "Summary card - Button to add details about the product"
+    },
+    "edit_photo_button_label": "Edytuj",
+    "@edit_photo_button_label": {
+        "description": "Edit photo button label"
+    },
+    "category_picker_screen_title": "Kategorie",
+    "@category_picker_screen_title": {
+        "description": "Categories picker screen title"
+    },
+    "basic_details": "Podstawowe informacje",
+    "product_name": "Nazwa Produktu",
+    "add_basic_details_product_name_error": "Wprowadź, proszę, nazwę produktu",
+    "brand_name": "Nazwa marki",
+    "add_basic_details_brand_name_error": "Wprowadź, proszę, nazwę marki",
+    "quantity": "Ilość i waga",
     "barcode": "Kod kreskowy",
-    "basic_details_add_success": "Basic details added succesfully",
-    "basic_details_add_error": "Unable to add basic details. Please try again after some time",
+    "barcode_barcode": "Kod kreskowy: {barcode}",
+    "@barcode_barcode": {
+        "description": "Displaying the raw barcode with label",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "barcode_invalid_error": "Nieprawidłowy kod kreskowy",
+    "basic_details_add_success": "Pomyślnie dodano podstawowe informacje",
+    "basic_details_add_error": "Nie można dodać podstawowych informacji. Spróbuj ponownie za jakiś czas",
     "@basic_details_add_error": {
         "description": "Error message when error occurs while submitting basic details"
     },
-    "confirm_clear": "Do you really want to clear?",
+    "confirm_clear": "Zamierzasz usunąć całą historię, czy na pewno chcesz kontynuować?",
     "@confirm_clear": {
         "description": "Asking about whether to clear the list or not"
+    },
+    "importance_label": "Kryterium - {name}: {id}",
+    "@importance_label": {
+        "description": "Used when user selects a food preference. example: Vegan importance; mandatory",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "user_list_all_title": "Listy",
+    "@user_list_all_title": {
+        "description": "Title about the user lists in the user preferences"
+    },
+    "user_list_all_empty": "Stwórz swoją pierwszą listę!",
+    "@user_list_all_empty": {
+        "description": "Small message when there are no user lists"
+    },
+    "user_list_length": "{count,plural, one {} few {{count} produkty} many {{count} produktów} =0{Lista pusta} =1{Jeden produkt} other{{count} produktów}}",
+    "@user_list_length": {
+        "description": "Length of a user product list",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "add_list_label": "Dodaj listę",
+    "@add_list_label": {
+        "description": "Label for the add list button"
+    },
+    "open_food_preferences_tooltip": "Edytuj swoje preferencje żywieniowe",
+    "@open_food_preferences_tooltip": {
+        "description": "Tooltip (message displayed on long press) to open the user food preferences"
+    },
+    "add_photo_button_label": "Dodaj zdjęcie",
+    "@add_photo_button_label": {
+        "description": "Label for the add photo button"
+    },
+    "choose_image_source_title": "Wybierz źródło obrazu",
+    "@choose_image_source_title": {
+        "description": "Title for the image source chooser"
+    },
+    "choose_image_source_body": "Wybierz, proszę, źródło obrazu",
+    "@choose_image_source_body": {
+        "description": "Body for the image source chooser"
+    },
+    "gallery_source_label": "Galeria",
+    "@gallery_source_label": {
+        "description": "Label for the gallery image source"
+    },
+    "share": "Udostępnij",
+    "@share": {
+        "description": "Button label for sharing something on another app. For example sharing the link to a product via Email"
+    },
+    "share_product_text": "Obejrzyj ten produkt na Open Food Facts: {url}",
+    "@share_product_text": {
+        "description": "The content which is send, when sharing a product",
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "capture": "Zrób zdjęcie",
+    "@capture": {
+        "description": "Button label for taking a photo"
+    },
+    "choose_from_gallery": "Wybierz z galerii",
+    "@choose_from_gallery": {
+        "description": "Button label for choosing a photo from gallery"
+    },
+    "expand_nutrition_facts": "Rozwiń tabelę wartości odżywczych",
+    "@expand_nutrition_facts": {
+        "description": "Label for expanding nutrition facts table in application setting"
+    },
+    "expand_nutrition_facts_body": "Zachowaj rozwiniętą tabelę wartości odżywczych",
+    "expand_ingredients": "Rozwiń składniki",
+    "@expand_ingredients": {
+        "description": "Label for expanding nutrition facts table in application setting"
+    },
+    "expand_ingredients_body": "Zachowaj rozwinięty panel składników",
+    "no_internet_connection": "Brak połączenia z internetem",
+    "@no_internet_connection": {
+        "description": "Message when there is no internet connection"
+    },
+    "world_results_label": "Wyniki z całego świata",
+    "@world_results_label": {
+        "description": "Label describing the current source of the results: the entire world"
+    },
+    "world_results_action": "Szukaj na świecie",
+    "@world_results_action": {
+        "description": "Label for the action button that displays the results from the entire world"
+    },
+    "clipboard_barcode_copied": "Kod kreskowy {barcode} skopiowany do schowka!",
+    "@clipboard_barcode_copied": {
+        "description": "Snackbar label after clipboard copy",
+        "placeholders": {
+            "barcode": {
+                "type": "String",
+                "description": "barcode"
+            }
+        }
+    },
+    "choose_app_language": "Wybierz język aplikacji",
+    "@choose_app_language": {
+        "description": "Choose Application Language"
+    },
+    "help_with_openfoodfacts": "Pomoc z OpenFoodFacts",
+    "@help_with_openfoodfacts": {
+        "description": "Label for the email title"
     }
 }

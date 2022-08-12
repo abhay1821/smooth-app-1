@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/data_models/product_list.dart';
 import 'package:smooth_app/database/dao_product_list.dart';
+import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_text_form_field.dart';
 import 'package:smooth_app/helpers/product_cards_helper.dart';
 
@@ -16,22 +17,21 @@ class ProductListUserDialogHelper {
   Future<ProductList?> showCreateUserListDialog(
     final BuildContext context,
   ) async {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-
-    final TextEditingController _textEditingController =
-        TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final TextEditingController textEditingController = TextEditingController();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     final String? title = await showDialog<String>(
       context: context,
-      builder: (final BuildContext context) => AlertDialog(
-        title: Text(appLocalizations.user_list_dialog_new_title),
-        content: Form(
-          key: _formKey,
+      builder: (final BuildContext context) => SmoothAlertDialog(
+        title: appLocalizations.user_list_dialog_new_title,
+        body: Form(
+          key: formKey,
           child: SmoothTextFormField(
             type: TextFieldTypes.PLAIN_TEXT,
-            controller: _textEditingController,
+            controller: textEditingController,
             hintText: appLocalizations.user_list_name_hint,
+            autofocus: true,
             textInputAction: TextInputAction.done,
             validator: (String? value) {
               final List<String> lists = daoProductList.getUserLists();
@@ -45,28 +45,26 @@ class ProductListUserDialogHelper {
             },
           ),
         ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(appLocalizations.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (!_formKey.currentState!.validate()) {
-                return;
-              }
-              Navigator.pop(context, _textEditingController.text);
-            },
-            child: Text(appLocalizations.okay),
-          ),
-        ],
+        negativeAction: SmoothActionButton(
+          onPressed: () => Navigator.pop(context),
+          text: appLocalizations.cancel,
+        ),
+        positiveAction: SmoothActionButton(
+          onPressed: () {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+            Navigator.pop(context, textEditingController.text);
+          },
+          text: appLocalizations.okay,
+        ),
       ),
     );
     if (title == null) {
       return null;
     }
     final ProductList productList = ProductList.user(title);
-    await daoProductList.put(productList);
+    daoProductList.put(productList);
     return productList;
   }
 
@@ -76,7 +74,7 @@ class ProductListUserDialogHelper {
     final Product product,
   ) async {
     final String barcode = product.barcode!;
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     final List<String> all = daoProductList.getUserLists();
     final List<String> withBarcode =
         daoProductList.getUserLists(withBarcode: barcode);
@@ -87,46 +85,30 @@ class ProductListUserDialogHelper {
       context: context,
       builder: (final BuildContext context) => StatefulBuilder(
         builder:
-            (BuildContext context, void Function(VoidCallback fn) setState) =>
-                AlertDialog(
-          title: Text(getProductName(product, appLocalizations)),
-          content: all.isEmpty
-              ? Container()
-              : SizedBox(
-                  // TODO(monsieurtanuki): proper sizes
-                  width: 300,
-                  height: 400,
-                  child: StatefulBuilder(
-                    builder: (BuildContext context,
-                        void Function(VoidCallback fn) setState) {
-                      final List<Widget> children = <Widget>[];
-                      for (final String name in all) {
-                        children.add(
-                          ListTile(
-                            leading: Icon(
-                              newWithBarcode.contains(name)
-                                  ? Icons.check_box
-                                  : Icons.check_box_outline_blank,
-                            ),
-                            title: Text(name),
-                            onTap: () => setState(
-                              () => newWithBarcode.contains(name)
-                                  ? newWithBarcode.remove(name)
-                                  : newWithBarcode.add(name),
-                            ),
-                          ),
-                        );
-                      }
-                      return ListView(children: children);
-                    },
-                  ),
+            (BuildContext context, void Function(VoidCallback fn) setState) {
+          final List<Widget> children = <Widget>[];
+          for (final String name in all) {
+            children.add(
+              ListTile(
+                leading: Icon(
+                  newWithBarcode.contains(name)
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank,
                 ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(appLocalizations.cancel),
-            ),
-            ElevatedButton(
+                title: Text(name),
+                onTap: () => setState(
+                  () => newWithBarcode.contains(name)
+                      ? newWithBarcode.remove(name)
+                      : newWithBarcode.add(name),
+                ),
+              ),
+            );
+          }
+          return SmoothAlertDialog(
+            close: true,
+            title: getProductName(product, appLocalizations),
+            body: Column(children: children),
+            negativeAction: SmoothActionButton(
               onPressed: () async {
                 final ProductList? productList =
                     await showCreateUserListDialog(context);
@@ -136,14 +118,14 @@ class ProductListUserDialogHelper {
                   setState(() => addedLists = true);
                 }
               },
-              child: Text(appLocalizations.user_list_button_new),
+              text: appLocalizations.user_list_button_new,
             ),
-            ElevatedButton(
+            positiveAction: SmoothActionButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text(appLocalizations.okay),
+              text: appLocalizations.okay,
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
     if (addedLists == false && result != true) {
@@ -160,8 +142,7 @@ class ProductListUserDialogHelper {
         continue;
       }
       final ProductList productList = ProductList.user(name);
-      await daoProductList.set(
-          productList, barcode, newWithBarcode.contains(name));
+      daoProductList.set(productList, barcode, newWithBarcode.contains(name));
     }
     return true;
   }
@@ -171,22 +152,21 @@ class ProductListUserDialogHelper {
     final BuildContext context,
     final ProductList initialProductList,
   ) async {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    final TextEditingController _textEditingController =
-        TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final TextEditingController textEditingController = TextEditingController();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     final String initialName = initialProductList.parameters;
-    _textEditingController.text = initialName;
+    textEditingController.text = initialName;
     final String? newName = await showDialog<String>(
       context: context,
-      builder: (final BuildContext context) => AlertDialog(
-        title: Text(appLocalizations.user_list_dialog_rename_title),
-        content: Form(
-          key: _formKey,
+      builder: (final BuildContext context) => SmoothAlertDialog(
+        title: appLocalizations.user_list_dialog_rename_title,
+        body: Form(
+          key: formKey,
           child: SmoothTextFormField(
             type: TextFieldTypes.PLAIN_TEXT,
-            controller: _textEditingController,
+            controller: textEditingController,
             hintText: appLocalizations.user_list_name_hint,
             textInputAction: TextInputAction.done,
             validator: (String? value) {
@@ -204,26 +184,54 @@ class ProductListUserDialogHelper {
             },
           ),
         ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(appLocalizations.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (!_formKey.currentState!.validate()) {
-                return;
-              }
-              Navigator.pop(context, _textEditingController.text);
-            },
-            child: Text(appLocalizations.okay),
-          ),
-        ],
+        negativeAction: SmoothActionButton(
+          onPressed: () => Navigator.pop(context),
+          text: appLocalizations.cancel,
+        ),
+        positiveAction: SmoothActionButton(
+          onPressed: () {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+            Navigator.pop(context, textEditingController.text);
+          },
+          text: appLocalizations.okay,
+        ),
       ),
     );
     if (newName == null) {
       return null;
     }
     return daoProductList.rename(initialProductList, newName);
+  }
+
+  /// Shows a "delete list" dialog; returns true if deleted.
+  Future<bool> showDeleteUserListDialog(
+    final BuildContext context,
+    final ProductList productList,
+  ) async {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+
+    final bool? deleted = await showDialog<bool>(
+      context: context,
+      builder: (final BuildContext context) => SmoothAlertDialog(
+        title: 'Delete list?',
+        body: Text(productList.parameters),
+        negativeAction: SmoothActionButton(
+          onPressed: () => Navigator.pop(context),
+          text: appLocalizations.cancel,
+        ),
+        positiveAction: SmoothActionButton(
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+          text: appLocalizations.okay,
+        ),
+      ),
+    );
+    if (deleted == null) {
+      return false;
+    }
+    return daoProductList.delete(productList);
   }
 }

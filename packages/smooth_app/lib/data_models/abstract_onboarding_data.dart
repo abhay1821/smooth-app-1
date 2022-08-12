@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_app/database/dao_string.dart';
 import 'package:smooth_app/database/local_database.dart';
-import 'package:smooth_app/database/product_query.dart';
+import 'package:smooth_app/query/product_query.dart';
 
 /// Abstraction of data we download, store and reuse at onboarding.
 abstract class AbstractOnboardingData<T> {
@@ -33,14 +33,15 @@ abstract class AbstractOnboardingData<T> {
   Future<void> clear() async =>
       DaoString(_localDatabase).put(_getDatabaseKey(), null);
 
-  /// Downloads data and store it locally.
-  Future<void> downloadData() async {
+  /// Downloads data and store it locally, then returns true when success
+  Future<bool> downloadData() async {
     try {
       final String string = await downloadDataString();
       final DaoString daoString = DaoString(_localDatabase);
       await daoString.put(_getDatabaseKey(), string);
+      return true;
     } catch (e) {
-      //
+      return false;
     }
   }
 

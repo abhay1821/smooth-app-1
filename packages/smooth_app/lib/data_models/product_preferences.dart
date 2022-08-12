@@ -6,6 +6,7 @@ import 'package:openfoodfacts/model/AttributeGroup.dart';
 import 'package:openfoodfacts/personalized_search/available_attribute_groups.dart';
 import 'package:openfoodfacts/personalized_search/available_preference_importances.dart';
 import 'package:openfoodfacts/personalized_search/available_product_preferences.dart';
+import 'package:openfoodfacts/personalized_search/preference_importance.dart';
 import 'package:openfoodfacts/personalized_search/product_preferences_manager.dart';
 import 'package:openfoodfacts/personalized_search/product_preferences_selection.dart';
 import 'package:smooth_app/data_models/downloadable_string.dart';
@@ -63,6 +64,16 @@ class ProductPreferences extends ProductPreferencesManager with ChangeNotifier {
 
   /// Refreshes the references with network data.
   Future<void> refresh(final String languageCode) async {
+    if (daoString != null) {
+      final String? latestLanguage =
+          await daoString!.get(_DAO_STRING_KEY_LANGUAGE);
+      if (latestLanguage == null || latestLanguage != languageCode) {
+        // we restart from scratch
+        // typical use-case: language change
+        _isNetwork = false;
+        _isDownloading = false;
+      }
+    }
     if (_isNetwork) {
       return;
     }
@@ -217,5 +228,32 @@ class ProductPreferences extends ProductPreferencesManager with ChangeNotifier {
       }
     }
     throw Exception('unknown attribute group for $attributeId');
+  }
+
+  /// Returns a compact view of the preferences.
+  ///
+  /// Useful if you want to know if the preferences actually changed.
+  List<String> getCompactView() {
+    final List<String> result = <String>[];
+    if (attributeGroups == null) {
+      return result;
+    }
+    for (final AttributeGroup attributeGroup in attributeGroups!) {
+      if (attributeGroup.attributes == null) {
+        continue;
+      }
+      for (final Attribute attribute in attributeGroup.attributes!) {
+        final String? attributeId = attribute.id;
+        if (attributeId == null) {
+          continue;
+        }
+        final String importanceId = getImportanceIdForAttributeId(attributeId);
+        if (importanceId != PreferenceImportance.ID_NOT_IMPORTANT) {
+          result.add('$attributeId=$importanceId');
+          continue;
+        }
+      }
+    }
+    return result;
   }
 }

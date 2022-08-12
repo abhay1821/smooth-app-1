@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:openfoodfacts/utils/LanguageHelper.dart';
+import 'package:smooth_app/generic_lib/design_constants.dart';
+import 'package:smooth_app/generic_lib/duration_constants.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
 const double _kCategoryHeight = 30.0;
 const double _kMaxCategoryWidth = 200.0;
-const Duration _kCategoryDisplayDuration = Duration(milliseconds: 250);
 
 /// A callback used to find information about the category node at the given
 /// `categoryPath`.
@@ -100,7 +102,7 @@ class _SmoothCategoryPickerState<T extends Comparable<T>>
       initialData: null,
       builder:
           (BuildContext context, AsyncSnapshot<SmoothCategory<T>?> snapshot) {
-        final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+        final AppLocalizations appLocalizations = AppLocalizations.of(context);
         final SmoothCategory<T>? category = snapshot.data;
         if (category == null) {
           return Container(
@@ -130,7 +132,7 @@ class _SmoothCategoryPickerState<T extends Comparable<T>>
             ),
           );
         }
-        return Scaffold(
+        return SmoothScaffold(
           floatingActionButton: widget.onAddCategory != null
               ? FloatingActionButton(
                   child: const Icon(Icons.add),
@@ -141,7 +143,7 @@ class _SmoothCategoryPickerState<T extends Comparable<T>>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(SMALL_SPACE),
                 child: SmoothCategoryDisplay<T>(
                   categories: widget.currentCategories,
                   onDeleted: (T item) {
@@ -154,7 +156,8 @@ class _SmoothCategoryPickerState<T extends Comparable<T>>
               Row(
                 children: <Widget>[
                   IconButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: LARGE_SPACE),
                     icon: const Icon(Icons.chevron_left),
                     onPressed: category.value != widget.currentPath.first
                         ? () {
@@ -285,7 +288,7 @@ class _CategoryViewState<T extends Comparable<T>>
     controller.animateToPage(
       page,
       curve: Curves.easeInOut,
-      duration: const Duration(milliseconds: 200),
+      duration: SmoothAnimationsDuration.short,
     );
   }
 
@@ -423,7 +426,7 @@ class _CategoryItem<T extends SmoothCategory<dynamic>> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 8.0),
+      padding: const EdgeInsetsDirectional.only(start: SMALL_SPACE),
       child: FutureBuilder<bool>(
         future: category.hasChildren,
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -529,7 +532,7 @@ class _SmoothCategoryDisplayState<T extends Object>
         widget.categories.difference(displayed.keys.toSet());
     for (final T category in addedCategories) {
       final AnimationController newController = AnimationController(
-          vsync: this, value: 0, duration: _kCategoryDisplayDuration)
+          vsync: this, value: 0, duration: SmoothAnimationsDuration.medium)
         ..addStatusListener(_cleanup)
         ..forward();
       displayed[category] = newController;
@@ -561,8 +564,8 @@ class _SmoothCategoryDisplayState<T extends Object>
     combinedCategories.sort();
     return Wrap(
       alignment: WrapAlignment.start,
-      spacing: 8.0,
-      runSpacing: 4.0,
+      spacing: SMALL_SPACE,
+      runSpacing: VERY_SMALL_SPACE,
       children: <Widget>[
         for (final T category in combinedCategories)
           AnimatedInputChip(

@@ -3,14 +3,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_app/data_models/fetched_product.dart';
 import 'package:smooth_app/database/dao_string_list.dart';
-import 'package:smooth_app/database/keywords_product_query.dart';
 import 'package:smooth_app/database/local_database.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
+import 'package:smooth_app/generic_lib/duration_constants.dart';
 import 'package:smooth_app/helpers/analytics_helper.dart';
 import 'package:smooth_app/pages/product/common/product_dialog_helper.dart';
 import 'package:smooth_app/pages/product/common/product_query_page_helper.dart';
 import 'package:smooth_app/pages/product/new_product_page.dart';
 import 'package:smooth_app/pages/scan/search_history_view.dart';
+import 'package:smooth_app/query/keywords_product_query.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
 void _performSearch(BuildContext context, String query) {
   if (query.trim().isEmpty) {
@@ -53,7 +55,7 @@ Future<void> _onSubmittedBarcode(
       searchCategory: 'barcode',
       searchCount: 1,
     );
-
+    //ignore: use_build_context_synchronously
     Navigator.push<Widget>(
       context,
       MaterialPageRoute<Widget>(
@@ -77,31 +79,40 @@ Future<void> _onSubmittedText(
   final LocalDatabase localDatabase,
 ) async =>
     ProductQueryPageHelper().openBestChoice(
-      color: Colors.deepPurple,
-      heroTag: 'search_bar',
       name: value,
       localDatabase: localDatabase,
       productQuery: KeywordsProductQuery(value),
       context: context,
     );
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  // https://github.com/openfoodfacts/smooth-app/pull/2219
+  final TextEditingController _searchTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SmoothScaffold(
       appBar: AppBar(toolbarHeight: 0.0),
-      body: Column(
-        children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: SearchField(autofocus: true),
-          ),
-          Expanded(
-            child: SearchHistoryView(
-              onTap: (String query) => _performSearch(context, query),
+      body: ChangeNotifierProvider<TextEditingController>(
+        create: (_) => _searchTextController,
+        child: Column(
+          children: <Widget>[
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: SearchField(autofocus: true),
             ),
-          ),
-        ],
+            Expanded(
+              child: SearchHistoryView(
+                onTap: (String query) => _performSearch(context, query),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -111,70 +122,138 @@ class SearchField extends StatefulWidget {
   const SearchField({
     this.autofocus = false,
     this.showClearButton = true,
+    this.readOnly = false,
     this.onFocus,
+    this.backgroundColor,
+    this.foregroundColor,
   });
 
   final bool autofocus;
   final bool showClearButton;
+
+  /// If true, the Widget will only display the UI
+  final bool readOnly;
   final void Function()? onFocus;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   @override
   State<SearchField> createState() => _SearchFieldState();
 }
 
 class _SearchFieldState extends State<SearchField> {
-  final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  bool _isEmpty = true;
+  late TextEditingController _controller;
 
-  static const Duration _animationDuration = Duration(milliseconds: 100);
+  bool _isEmpty = true;
 
   @override
   void initState() {
     super.initState();
-    _textController.addListener(_handleTextChange);
     _focusNode.addListener(_handleFocusChange);
+
     if (widget.autofocus) {
       _focusNode.requestFocus();
     }
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    try {
+      _controller = Provider.of<TextEditingController>(context);
+    } catch (err) {
+      _controller = TextEditingController();
+    }
+
+    _controller.removeListener(_handleTextChange);
+    _controller.addListener(_handleTextChange);
+  }
+
+  @override
   void dispose() {
-    _textController.dispose();
+    _focusNode.removeListener(_handleFocusChange);
     _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations localizations = AppLocalizations.of(context)!;
-    return TextField(
-      textInputAction: TextInputAction.search,
-      controller: _textController,
-      focusNode: _focusNode,
-      onSubmitted: (String query) => _performSearch(context, query),
-      decoration: InputDecoration(
-        filled: true,
-        border: const OutlineInputBorder(
-          borderRadius: CIRCULAR_BORDER_RADIUS,
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.all(20.0),
-        hintText: localizations.search,
-        suffixIcon: widget.showClearButton ? _buildClearButton() : null,
+    final AppLocalizations localizations = AppLocalizations.of(context);
+
+    try {
+      _controller = Provider.of<TextEditingController>(context);
+    } catch (err) {
+      _controller = TextEditingController();
+    }
+
+    final InputDecoration inputDecoration = InputDecoration(
+      fillColor: widget.backgroundColor,
+      labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
+            color: widget.foregroundColor,
+          ),
+      filled: true,
+      border: const OutlineInputBorder(
+        borderRadius: CIRCULAR_BORDER_RADIUS,
+        borderSide: BorderSide.none,
       ),
-      style: const TextStyle(fontSize: 24.0),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 25.0,
+        vertical: 17.0,
+      ),
+      hintText: localizations.search,
+      suffixIcon: widget.showClearButton ? _buildClearButton() : null,
     );
+
+    const TextStyle textStyle = TextStyle(fontSize: 18.0);
+
+    if (widget.readOnly) {
+      return InkWell(
+        borderRadius: CIRCULAR_BORDER_RADIUS,
+        splashColor: Theme.of(context).primaryColor,
+        onTap: () {
+          widget.onFocus?.call();
+        },
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: CIRCULAR_BORDER_RADIUS,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : null,
+          ),
+          child: InputDecorator(
+            decoration: inputDecoration,
+            child: Text(
+              inputDecoration.hintText!,
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: Theme.of(context).hintColor)
+                  .merge(textStyle),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return TextField(
+        textInputAction: TextInputAction.search,
+        controller: _controller,
+        focusNode: _focusNode,
+        onSubmitted: (String query) => _performSearch(context, query),
+        decoration: inputDecoration,
+        style: textStyle,
+      );
+    }
   }
 
   Widget _buildClearButton() {
     return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsetsDirectional.only(end: MEDIUM_SPACE),
       child: IconButton(
         onPressed: _handleClear,
         icon: AnimatedCrossFade(
-          duration: _animationDuration,
+          duration: SmoothAnimationsDuration.brief,
           crossFadeState:
               _isEmpty ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           // Closes the page.
@@ -189,9 +268,9 @@ class _SearchFieldState extends State<SearchField> {
   void _handleTextChange() {
     //Only rebuild the widget if the text length is 0 or 1 as we only check if
     //the text length is empty or not
-    if (_textController.text.isEmpty || _textController.text.length == 1) {
+    if (_controller.text.isEmpty || _controller.text.length == 1) {
       setState(() {
-        _isEmpty = _textController.text.isEmpty;
+        _isEmpty = _controller.text.isEmpty;
       });
     }
   }
@@ -207,7 +286,7 @@ class _SearchFieldState extends State<SearchField> {
     if (_isEmpty) {
       Navigator.pop(context);
     } else {
-      _textController.clear();
+      _controller.clear();
     }
   }
 }

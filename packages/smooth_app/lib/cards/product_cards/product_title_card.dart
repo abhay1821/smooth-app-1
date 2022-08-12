@@ -23,7 +23,7 @@ class ProductTitleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
     final String subtitleText;
     final Widget trailingWidget;
@@ -47,19 +47,20 @@ class ProductTitleCard extends StatelessWidget {
       ).selectable(isSelectable: isSelectable);
     }
     return Align(
-      alignment: Alignment.topLeft,
+      alignment: AlignmentDirectional.topStart,
       child: InkWell(
-        onTap: () async {
-          if (getProductName(product, appLocalizations) ==
-              appLocalizations.unknownProductName) {
-            await Navigator.push<bool>(
-              context,
-              MaterialPageRoute<bool>(
-                builder: (BuildContext context) => AddBasicDetailsPage(product),
-              ),
-            );
-          }
-        },
+        onTap: (getProductName(product, appLocalizations) ==
+                appLocalizations.unknownProductName)
+            ? () async {
+                await Navigator.push<Product?>(
+                  context,
+                  MaterialPageRoute<Product>(
+                    builder: (BuildContext context) =>
+                        AddBasicDetailsPage(product),
+                  ),
+                );
+              }
+            : null,
         child: ListTile(
           dense: dense,
           contentPadding: EdgeInsets.zero,

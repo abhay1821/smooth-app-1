@@ -3,77 +3,75 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:openfoodfacts/model/OcrIngredientsResult.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_app/data_models/up_to_date_product_provider.dart';
 import 'package:smooth_app/database/local_database.dart';
-import 'package:smooth_app/database/product_query.dart';
-import 'package:smooth_app/generic_lib/buttons/smooth_action_button.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
+import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
 import 'package:smooth_app/helpers/picture_capture_helper.dart';
 import 'package:smooth_app/pages/image_crop_page.dart';
 import 'package:smooth_app/pages/product/common/product_refresher.dart';
+import 'package:smooth_app/pages/product/explanation_widget.dart';
+import 'package:smooth_app/pages/product/ocr_helper.dart';
+import 'package:smooth_app/widgets/smooth_scaffold.dart';
 
-/// Page for editing the ingredients of a product and the image of the
-/// ingredients.
-class EditIngredientsPage extends StatefulWidget {
-  const EditIngredientsPage({
-    Key? key,
+/// Editing with OCR a product field and the corresponding image.
+///
+/// Typical use-cases: ingredients and packaging.
+class EditOcrPage extends StatefulWidget {
+  const EditOcrPage({
     required this.product,
-    this.refreshProductCallback,
-  }) : super(key: key);
+    required this.helper,
+  });
 
   final Product product;
-  final Function(BuildContext)? refreshProductCallback;
+  final OcrHelper helper;
 
   @override
-  State<EditIngredientsPage> createState() => _EditIngredientsPageState();
+  State<EditOcrPage> createState() => _EditOcrPageState();
 }
 
-class _EditIngredientsPageState extends State<EditIngredientsPage> {
+class _EditOcrPageState extends State<EditOcrPage> {
   final TextEditingController _controller = TextEditingController();
   ImageProvider? _imageProvider;
   bool _updatingImage = false;
-  bool _updatingIngredients = false;
+  bool _updatingText = false;
+  late Product _product;
+  late OcrHelper _helper;
 
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.product.ingredientsText ?? '';
+    _product = widget.product;
+    _helper = widget.helper;
+    _controller.text = _helper.getText(_product);
   }
 
   Future<void> _onSubmitField() async {
-    setState(() {
-      _updatingIngredients = true;
-    });
+    setState(() => _updatingText = true);
 
     try {
-      await _updateIngredientsText(_controller.text);
+      await _updateText(_controller.text);
     } catch (error) {
-      final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-      _showError(appLocalizations.ingredients_editing_error);
+      final AppLocalizations appLocalizations = AppLocalizations.of(context);
+      _showError(_helper.getError(appLocalizations));
     }
 
-    setState(() {
-      _updatingIngredients = false;
-    });
+    setState(() => _updatingText = false);
   }
 
   Future<void> _onTapGetImage(bool isNewImage) async {
-    setState(() {
-      _updatingImage = true;
-    });
+    setState(() => _updatingImage = true);
 
     try {
       await _getImage(isNewImage);
     } catch (error) {
-      final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-      _showError(appLocalizations.ingredients_editing_image_error);
+      final AppLocalizations appLocalizations = AppLocalizations.of(context);
+      _showError(_helper.getImageError(appLocalizations));
     }
 
-    setState(() {
-      _updatingImage = false;
-    });
+    setState(() => _updatingImage = false);
   }
 
   // Show the given error message to the user in a SnackBar.
@@ -94,7 +92,8 @@ class _EditIngredientsPageState extends State<EditIngredientsPage> {
   Future<void> _getImage(bool isNewImage) async {
     bool isUploaded = true;
     if (isNewImage) {
-      final File? croppedImageFile = await startImageCropping(context);
+      final File? croppedImageFile =
+          await startImageCropping(context, showOptionDialog: true);
 
       // If the user cancels.
       if (croppedImageFile == null) {
@@ -102,14 +101,14 @@ class _EditIngredientsPageState extends State<EditIngredientsPage> {
       }
 
       // Update the image to load the new image file.
-      setState(() {
-        _imageProvider = FileImage(croppedImageFile);
-      });
-
+      setState(() => _imageProvider = FileImage(croppedImageFile));
+      if (!mounted) {
+        return;
+      }
       isUploaded = await uploadCapturedPicture(
         context,
-        barcode: widget.product.barcode!,
-        imageField: ImageField.INGREDIENTS,
+        barcode: _product.barcode!,
+        imageField: _helper.getImageField(),
         imageUri: croppedImageFile.uri,
       );
 
@@ -120,46 +119,29 @@ class _EditIngredientsPageState extends State<EditIngredientsPage> {
       throw Exception('Image could not be uploaded.');
     }
 
-    final OpenFoodFactsLanguage? language = ProductQuery.getLanguage();
-
-    final User user = ProductQuery.getUser();
-
-    // Get the ingredients from the image.
-    final OcrIngredientsResult ingredientsResult =
-        await OpenFoodAPIClient.extractIngredients(
-            user, widget.product.barcode!, language!);
-
-    final String? nextIngredients = ingredientsResult.ingredientsTextFromImage;
-    if (nextIngredients == null || nextIngredients.isEmpty) {
-      throw Exception('Failed to detect ingredients text in image.');
+    final String? extractedText = await _helper.getExtractedText(_product);
+    if (extractedText == null || extractedText.isEmpty) {
+      throw Exception('Failed to detect text in image.');
     }
 
     // Save the product's ingredients if needed.
-    if (_controller.text != nextIngredients) {
-      setState(() {
-        _controller.text = nextIngredients;
-      });
+    if (_controller.text != extractedText) {
+      setState(() => _controller.text = extractedText);
     }
   }
 
-  Future<void> _updateIngredientsText(String ingredientsText) async {
-    widget.product.ingredientsText = ingredientsText;
+  Future<bool> _updateText(final String text) async {
     final LocalDatabase localDatabase = context.read<LocalDatabase>();
-    final bool savedAndRefreshed = await ProductRefresher().saveAndRefresh(
+    return ProductRefresher().saveAndRefresh(
       context: context,
       localDatabase: localDatabase,
-      product: widget.product,
+      product: _helper.getMinimalistProduct(_product, text),
     );
-    if (savedAndRefreshed) {
-      await widget.refreshProductCallback?.call(context);
-    } else {
-      throw Exception("Couldn't save the product.");
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
 
     final List<Widget> children = <Widget>[];
 
@@ -171,36 +153,43 @@ class _EditIngredientsPageState extends State<EditIngredientsPage> {
         ),
       );
     } else {
-      if (widget.product.imageIngredientsUrl != null) {
-        children.add(ConstrainedBox(
-          constraints: const BoxConstraints.expand(),
-          child: _buildZoomableImage(
-              NetworkImage(widget.product.imageIngredientsUrl!)),
-        ));
+      final String? imageUrl = _helper.getImageUrl(_product);
+      if (imageUrl != null) {
+        children.add(
+          ConstrainedBox(
+            constraints: const BoxConstraints.expand(),
+            child: _buildZoomableImage(NetworkImage(imageUrl)),
+          ),
+        );
       } else {
         children.add(Container(color: Colors.white));
       }
     }
 
     if (_updatingImage) {
-      children.add(const Center(
-        child: CircularProgressIndicator(),
-      ));
+      children.add(
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     } else {
-      children.add(_EditIngredientsBody(
-        controller: _controller,
-        imageIngredientsUrl: widget.product.imageIngredientsUrl,
-        onTapGetImage: _onTapGetImage,
-        onSubmitField: _onSubmitField,
-        updatingIngredients: _updatingIngredients,
-        hasImageProvider: _imageProvider != null,
-      ));
+      children.add(
+        _OcrWidget(
+          controller: _controller,
+          onTapGetImage: _onTapGetImage,
+          onSubmitField: _onSubmitField,
+          updatingText: _updatingText,
+          hasImageProvider: _imageProvider != null,
+          product: _product,
+          helper: _helper,
+        ),
+      );
     }
 
-    return Scaffold(
+    final Scaffold scaffold = SmoothScaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(appLocalizations.ingredients_editing_title),
+        title: Text(_helper.getTitle(appLocalizations)),
         backgroundColor: Colors.transparent,
         flexibleSpace: ClipRect(
           child: BackdropFilter(
@@ -215,52 +204,63 @@ class _EditIngredientsPageState extends State<EditIngredientsPage> {
         children: children,
       ),
     );
+    return Consumer<UpToDateProductProvider>(
+      builder: (
+        final BuildContext context,
+        final UpToDateProductProvider provider,
+        final Widget? child,
+      ) {
+        final Product? refreshedProduct = provider.get(_product);
+        if (refreshedProduct != null) {
+          _product = refreshedProduct;
+        }
+        return scaffold;
+      },
+    );
   }
 
   Widget _buildZoomableImage(ImageProvider imageSource) {
     return InteractiveViewer(
-      boundaryMargin: const EdgeInsets.fromLTRB(20, 10, 20, 200),
+      boundaryMargin: const EdgeInsets.only(
+        left: VERY_LARGE_SPACE,
+        top: 10,
+        right: VERY_LARGE_SPACE,
+        bottom: 200,
+      ),
       minScale: 0.1,
       maxScale: 5,
-      child: Image(fit: BoxFit.contain, image: imageSource),
+      child: Image(
+        fit: BoxFit.contain,
+        image: imageSource,
+      ),
     );
   }
 }
 
-class _EditIngredientsBody extends StatelessWidget {
-  const _EditIngredientsBody({
-    Key? key,
+class _OcrWidget extends StatelessWidget {
+  const _OcrWidget({
     required this.controller,
-    required this.imageIngredientsUrl,
     required this.onSubmitField,
     required this.onTapGetImage,
-    required this.updatingIngredients,
+    required this.updatingText,
     required this.hasImageProvider,
-  }) : super(key: key);
+    required this.product,
+    required this.helper,
+  });
 
   final TextEditingController controller;
-  final bool updatingIngredients;
-  final String? imageIngredientsUrl;
+  final bool updatingText;
   final Future<void> Function(bool) onTapGetImage;
   final Future<void> Function() onSubmitField;
   final bool hasImageProvider;
-
-  Widget _getExtraitIngredientsBtn(AppLocalizations appLocalizations) {
-    if (hasImageProvider || imageIngredientsUrl != null) {
-      return SmoothActionButton(
-        text: appLocalizations.edit_ingredients_extrait_ingredients_btn_text,
-        onPressed: () => onTapGetImage(false),
-      );
-    }
-    return Container();
-  }
+  final Product product;
+  final OcrHelper helper;
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     return Align(
-      alignment: Alignment.bottomLeft,
+      alignment: AlignmentDirectional.bottomStart,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -269,12 +269,16 @@ class _EditIngredientsBody extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    bottom: LARGE_SPACE, right: SMALL_SPACE),
-                child: SmoothActionButton(
-                  text:
-                      appLocalizations.edit_ingredients_refresh_photo_btn_text,
-                  onPressed: () => onTapGetImage(true),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: LARGE_SPACE,
+                  start: LARGE_SPACE,
+                  end: LARGE_SPACE,
+                ),
+                child: SmoothActionButtonsBar(
+                  positiveAction: SmoothActionButton(
+                    text: helper.getActionRefreshPhoto(appLocalizations),
+                    onPressed: () => onTapGetImage(true),
+                  ),
                 ),
               ),
             ),
@@ -293,13 +297,22 @@ class _EditIngredientsBody extends StatelessWidget {
                   padding: const EdgeInsets.all(LARGE_SPACE),
                   child: Column(
                     children: <Widget>[
-                      _getExtraitIngredientsBtn(appLocalizations),
+                      if (hasImageProvider ||
+                          helper.getImageUrl(product) != null)
+                        SmoothActionButtonsBar.single(
+                          action: SmoothActionButton(
+                            text: helper.getActionExtractText(appLocalizations),
+                            onPressed: () => onTapGetImage(false),
+                          ),
+                        ),
                       const SizedBox(height: MEDIUM_SPACE),
                       TextField(
-                        enabled: !updatingIngredients,
+                        enabled: !updatingText,
                         controller: controller,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          fillColor: Colors.white.withOpacity(0.2),
+                          filled: true,
+                          enabledBorder: const OutlineInputBorder(
                             borderRadius: ANGULAR_BORDER_RADIUS,
                           ),
                         ),
@@ -308,27 +321,24 @@ class _EditIngredientsBody extends StatelessWidget {
                         onSubmitted: (_) => onSubmitField,
                       ),
                       const SizedBox(height: SMALL_SPACE),
-                      Text(appLocalizations.ingredients_editing_instructions,
-                          style: Theme.of(context).textTheme.caption),
+                      ExplanationWidget(
+                        helper.getInstructions(appLocalizations),
+                      ),
                       const SizedBox(height: MEDIUM_SPACE),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SmoothActionButton(
-                              text: appLocalizations.cancel,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            const SizedBox(width: LARGE_SPACE),
-                            SmoothActionButton(
-                              text: appLocalizations.save,
-                              onPressed: () async {
-                                await onSubmitField();
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ]),
+                      SmoothActionButtonsBar(
+                        negativeAction: SmoothActionButton(
+                          text: appLocalizations.cancel,
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        positiveAction: SmoothActionButton(
+                          text: appLocalizations.save,
+                          onPressed: () async {
+                            await onSubmitField();
+                            //ignore: use_build_context_synchronously
+                            Navigator.pop(context, product);
+                          },
+                        ),
+                      ),
                       const SizedBox(height: MEDIUM_SPACE),
                     ],
                   ),
